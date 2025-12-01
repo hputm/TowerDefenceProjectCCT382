@@ -1,3 +1,27 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon\r
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.VolumeIcon.icns
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE / editor folders (optional)
+.vscode/
+.idea/
+
+# Ignore temporary files
+*.tmp
+*.temp
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore

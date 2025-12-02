@@ -14,7 +14,7 @@ We currently have a partial implementation of the core systems:
 - Building system with placement logic ✅
 - Combat systems ✅
 - Grid-based map system ✅
-- Enemy AI system ✅ *(Partially implemented)*
+- Enemy AI system ✅
 
 ## Required Script Components
 
@@ -194,28 +194,17 @@ We currently have a partial implementation of the core systems:
 - Handle population growth
 - Enforce population constraints
 
-### 8. Enemy Systems ✅ *(Partially Implemented)*
+### 8. Enemy Systems ✅
 
-#### Enemy.cs ✅
-**Responsibility:** Basic enemy behavior
-**Functions:**
-- Move along predefined waypoints
-- Handle health and damage
-- Notify systems when reaching the keep or dying
-
-#### EnemyAI.cs ✅
-**Responsibility:** Enhanced enemy AI behavior
+#### EnhancedEnemy.cs ✅
+**Responsibility:** Combined enemy movement, combat, and stat definition
 **Functions:**
 - Move along roads defined by the grid system
 - Target and attack buildings that block their path
 - Navigate to the endpoint (castle/keep)
-
-#### EnemyGroup.cs
-**Responsibility:** Grouped enemy behavior (2-3 enemies together)
-**Functions:**
-- Coordinate movement of group members
-- Handle group cohesion
-- Manage group defeat conditions
+- Support multiple enemy types with configurable stats
+- Support squad-based enemies with tiered stats
+- Handle gold dropping on death
 
 #### EnemySpawner.cs
 **Responsibility:** Spawn enemies in waves
@@ -278,7 +267,7 @@ We currently have a partial implementation of the core systems:
 13. GridCell.cs ✅
 14. GridManager.cs ✅
 15. GridPathfinder.cs ✅
-16. EnemyAI.cs ✅
+16. EnhancedEnemy.cs ✅
 
 ### Phase 2: UI Systems (High Priority)
 1. UIManager.cs

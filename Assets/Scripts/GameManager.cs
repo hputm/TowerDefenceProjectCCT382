@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     }
     
     [Header("Game Settings")]
-    [SerializeField] private int startingLives = 20;
+    [SerializeField] private int initialLives = 20;
     [SerializeField] private int currentLives;
     [SerializeField] private int currentWave = 0;
     [SerializeField] private float timeBetweenWaves = 5f;
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
     
     private void Start()
     {
-        currentLives = startingLives;
+        currentLives = initialLives;
         ChangeState(GameState.Menu);
     }
     
@@ -164,12 +164,30 @@ public class GameManager : MonoBehaviour
     }
     
     /// <summary>
-    /// Gets the current game state
+    /// Get current game state
+    /// 获取当前游戏状态
     /// </summary>
-    /// <returns>Current game state</returns>
-    public GameState GetGameState()
+    public GameState GetCurrentState()
     {
         return currentState;
+    }
+    
+    /// <summary>
+    /// Get current wave number
+    /// 获取当前波次
+    /// </summary>
+    public int GetCurrentWave()
+    {
+        return currentWave;
+    }
+    
+    /// <summary>
+    /// Get current lives
+    /// 获取当前生命值
+    /// </summary>
+    public int GetLives()
+    {
+        return currentLives;
     }
     
     #endregion
@@ -183,7 +201,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentState == GameState.Menu || currentState == GameState.Paused)
         {
-            currentLives = startingLives;
+            currentLives = initialLives;
             currentWave = 0;
             onLivesChanged?.Invoke(currentLives);
             ChangeState(GameState.Playing);
@@ -192,46 +210,95 @@ public class GameManager : MonoBehaviour
     }
     
     /// <summary>
-    /// Pauses the game
+    /// Start next wave of enemies
+    /// 开始下一波敌人
     /// </summary>
-    public void PauseGame()
+    public void StartNextWave()
     {
-        if (currentState == GameState.Playing || currentState == GameState.WaveInProgress)
+        if (currentState == GameState.Playing)
         {
-            ChangeState(GameState.Paused);
+            var spawner = FindObjectOfType<EnemySpawner>();
+            if (spawner != null)
+            {
+                // Increment wave counter
+                currentWave++;
+                onWaveChanged?.Invoke(currentWave);
+                
+                // Start the new wave
+                spawner.SetCurrentWave(currentWave);
+                spawner.StartWave();
+            }
         }
     }
     
     /// <summary>
-    /// Resumes the game from pause
+    /// Pause the game
+    /// 暂停游戏
+    /// </summary>
+    public void PauseGame()
+    {
+        if (currentState == GameState.Playing)
+        {
+            currentState = GameState.Paused;
+            onGameStateChanged?.Invoke(currentState);
+            Time.timeScale = 0f;
+        }
+    }
+    
+    /// <summary>
+    /// Resume the game
+    /// 继续游戏
     /// </summary>
     public void ResumeGame()
     {
         if (currentState == GameState.Paused)
         {
-            ChangeState(GameState.Playing);
+            currentState = GameState.Playing;
+            onGameStateChanged?.Invoke(currentState);
+            Time.timeScale = 1f;
         }
     }
     
     /// <summary>
-    /// Starts the next wave of enemies
+    /// Return to main menu
+    /// 返回主菜单
     /// </summary>
-    public void StartNextWave()
+    public void ReturnToMenu()
     {
-        if (currentState != GameState.Playing && currentState != GameState.WaveInProgress)
-            return;
-            
-        currentWave++;
-        onWaveChanged?.Invoke(currentWave);
-        ChangeState(GameState.WaveInProgress);
+        currentState = GameState.Menu;
+        onGameStateChanged?.Invoke(currentState);
+        Time.timeScale = 1f;
         
-        // Notify spawner to start wave
-        if (enemySpawner != null)
+        // Reset game state
+        currentWave = 0;
+        currentLives = initialLives;
+        
+        // Clean up existing enemies and towers
+        CleanupGameObjects();
+    }
+    
+    /// <summary>
+    /// Clean up game objects between games
+    /// 清理游戏对象
+    /// </summary>
+    void CleanupGameObjects()
+    {
+        // Clean up enemies
+        var enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (var enemy in enemies)
         {
-            enemySpawner.StartWave(currentWave);
+            Destroy(enemy.gameObject);
         }
         
-        Debug.Log($"Starting wave {currentWave}");
+        // Clean up buildings (except static ones like castle)
+        var buildings = FindObjectsByType<BuildingBase>(FindObjectsSortMode.None);
+        foreach (var building in buildings)
+        {
+            if (!building.isStaticBuilding)
+            {
+                Destroy(building.gameObject);
+            }
+        }
     }
     
     /// <summary>
@@ -296,24 +363,6 @@ public class GameManager : MonoBehaviour
     #endregion
     
     #region Utility Methods
-    
-    /// <summary>
-    /// Gets the current wave number
-    /// </summary>
-    /// <returns>Current wave number</returns>
-    public int GetCurrentWave()
-    {
-        return currentWave;
-    }
-    
-    /// <summary>
-    /// Gets the current number of lives
-    /// </summary>
-    /// <returns>Current lives</returns>
-    public int GetCurrentLives()
-    {
-        return currentLives;
-    }
     
     /// <summary>
     /// Gets the keep object

@@ -44,6 +44,9 @@ public class BuildingBase : MonoBehaviour, IDamageable
     [Tooltip("Whether this building is a static part of the level (like the castle)")]
     public bool isStaticBuilding = false;
     
+    [Tooltip("Whether this building blocks enemy movement")]
+    public bool blocksMovement = true;
+    
     // Reference to the grid cell this building is placed on
     [HideInInspector] public GridCell gridCell;
     
@@ -251,6 +254,19 @@ public class BuildingBase : MonoBehaviour, IDamageable
     public void SetGridCell(GridCell cell)
     {
         gridCell = cell;
+    }
+    
+    #endregion
+    
+    #region Movement Blocking
+    
+    /// <summary>
+    /// Check if this building blocks enemy movement
+    /// </summary>
+    /// <returns>True if building blocks movement</returns>
+    public bool IsBlockingMovement()
+    {
+        return blocksMovement && !IsDestroyed();
     }
     
     #endregion

@@ -13,7 +13,8 @@ We currently have a partial implementation of the core systems:
 - Game state management ✅
 - Building system with placement logic ✅
 - Combat systems ✅
-- Grid-based map system ✅ *(Implemented)*
+- Grid-based map system ✅
+- Enemy AI system ✅ *(Partially implemented)*
 
 ## Required Script Components
 
@@ -160,7 +161,7 @@ We currently have a partial implementation of the core systems:
 - Visual feedback for valid/invalid placement
 - Instantiate buildings
 
-### 6. Grid Map System ✅ *(Implemented)*
+### 6. Grid Map System ✅
 
 #### GridCell.cs ✅
 **Responsibility:** Represents individual grid cells
@@ -177,6 +178,12 @@ We currently have a partial implementation of the core systems:
 - Provide access to grid cells
 - Support neighbor queries
 
+#### GridPathfinder.cs ✅
+**Responsibility:** Find paths along road grid cells
+**Functions:**
+- Find paths from start to end positions using road cells
+- Support pathfinding for enemies
+
 ### 7. Population and Economy
 
 #### PopulationManager.cs
@@ -187,7 +194,21 @@ We currently have a partial implementation of the core systems:
 - Handle population growth
 - Enforce population constraints
 
-### 8. Enemy Systems
+### 8. Enemy Systems ✅ *(Partially Implemented)*
+
+#### Enemy.cs ✅
+**Responsibility:** Basic enemy behavior
+**Functions:**
+- Move along predefined waypoints
+- Handle health and damage
+- Notify systems when reaching the keep or dying
+
+#### EnemyAI.cs ✅
+**Responsibility:** Enhanced enemy AI behavior
+**Functions:**
+- Move along roads defined by the grid system
+- Target and attack buildings that block their path
+- Navigate to the endpoint (castle/keep)
 
 #### EnemyGroup.cs
 **Responsibility:** Grouped enemy behavior (2-3 enemies together)
@@ -196,12 +217,12 @@ We currently have a partial implementation of the core systems:
 - Handle group cohesion
 - Manage group defeat conditions
 
-#### EnemyAI.cs
-**Responsibility:** Advanced enemy behavior
+#### EnemySpawner.cs
+**Responsibility:** Spawn enemies in waves
 **Functions:**
-- Pathfinding improvements
-- Combat behavior
-- Interaction with defensive structures
+- Spawn enemies at appropriate times
+- Manage wave progression
+- Coordinate with GameManager
 
 ## Team Member Responsibilities
 
@@ -256,6 +277,8 @@ We currently have a partial implementation of the core systems:
 12. HealthBar.cs ✅
 13. GridCell.cs ✅
 14. GridManager.cs ✅
+15. GridPathfinder.cs ✅
+16. EnemyAI.cs ✅
 
 ### Phase 2: UI Systems (High Priority)
 1. UIManager.cs
@@ -276,7 +299,7 @@ We currently have a partial implementation of the core systems:
 
 ### Phase 5: Enhanced Enemy Systems (Lower Priority)
 1. EnemyGroup.cs
-2. EnemyAI.cs
+2. EnemySpawner.cs
 
 ## Integration Points
 
@@ -307,6 +330,11 @@ We currently have a partial implementation of the core systems:
    - Pathfinding for enemies
    - Visual representation of map
 
+6. **Enemy System** integrates with:
+   - Grid-based pathfinding
+   - Building attack logic
+   - Game state management
+
 ## Testing Requirements
 
 1. Unit tests for core systems (resources, population, combat calculations)
@@ -325,6 +353,7 @@ We currently have a partial implementation of the core systems:
 - Building system with placement logic ✅
 - Combat systems with health bars ✅
 - Grid-based map system ✅
+- Enemy AI system ✅
 
 ### Milestone 2: Complete Core Systems
 - All defensive building types implemented ✅

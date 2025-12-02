@@ -119,8 +119,8 @@ public class TowerAttackHealth : MonoBehaviour
     };
 
     [Header("Game References / 游戏引用")]
-    [Tooltip("Reference to enemy manager / 敌人管理器引用")]
-    public EnemyManager enemyManager;
+    //[Tooltip("Reference to enemy manager / 敌人管理器引用")]
+    //public EnemyManager enemyManager;
     
     [Tooltip("Projectile prefab for ranged attacks / 范围攻击的投射物预制体")]
     public GameObject projectilePrefab;
@@ -162,14 +162,14 @@ public class TowerAttackHealth : MonoBehaviour
         currentProjectileSpeed = currentStats.projectileSpeed;
 
         // Find enemy manager if not assigned
-        if (enemyManager == null)
+        /*if (enemyManager == null)
         {
             enemyManager = FindObjectOfType<EnemyManager>();
             if (enemyManager == null)
             {
                 Debug.LogWarning("EnemyManager not found, searching for alternative", this);
             }
-        }
+        }*/
 
         isInitialized = true;
     }

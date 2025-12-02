@@ -232,13 +232,13 @@ public class EnemyDefiner : MonoBehaviour
 
     [Header("Game References / 游戏引用")]
     [Tooltip("Reference to enemy health system / 敌人血量系统引用")]
-    public EnemyHealth enemyHealth;
+    public Enemy enemyHealth;
     
     [Tooltip("Reference to enemy movement system / 敌人移动系统引用")]
     public Enemy enemyMovement;
     
     [Tooltip("Reference to resource manager for gold drops / 资源管理器引用用于金币掉落")]
-    public GameResourceManager resourceManager;
+    public TowerAttackHealth resourceManager;
 
     void Start()
     {

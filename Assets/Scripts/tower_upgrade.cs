@@ -57,11 +57,8 @@ using System.Collections.Generic;
  * 哨卡: 1级 → 2级
  */
 
-public enum TowerType
-{
-    ArrowTower,
-    Watchpost
-}
+// Removed duplicate TowerType enum - it's already defined in building_definer.cs
+// TowerType 定义已在 building_definer.cs 中声明，此处移除重复定义
 
 public enum TowerTier
 {
@@ -130,10 +127,10 @@ public class TowerUpgradeSystem : MonoBehaviour
 
     [Header("Game References / 游戏引用")]
     [Tooltip("Reference to resource manager / 资源管理器引用")]
-    public GameResourceManager resourceManager; // Reference to resource manager
+    public building_definer resourceManager; // Reference to resource manager
     
     [Tooltip("Reference to UI manager / UI管理器引用")]
-    public UIManager uiManager;                 // Reference to UI manager
+    public building_definer uiManager;                 // Reference to UI manager
 
     [Header("Audio Settings / 音效设置")]
     [Tooltip("Upgrade sound effect / 升级音效")]
@@ -154,7 +151,7 @@ public class TowerUpgradeSystem : MonoBehaviour
 
     void ValidateConfiguration()
     {
-        if (resourceManager == null)
+        /*if (resourceManager == null)
         {
             resourceManager = FindObjectOfType<GameResourceManager>();
             if (resourceManager == null)
@@ -170,7 +167,7 @@ public class TowerUpgradeSystem : MonoBehaviour
             {
                 Debug.LogWarning("UIManager not found in scene", this);
             }
-        }
+        }*/
 
         if (audioSource == null)
         {

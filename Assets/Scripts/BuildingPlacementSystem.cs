@@ -6,6 +6,20 @@ using UnityEngine;
 /// </summary>
 public class BuildingPlacementSystem : MonoBehaviour
 {
+    public enum BuildingType
+    {
+        ArrowTower,
+        RoadBlock,
+        DefenseBuilding
+    }
+    
+    [System.Serializable]
+    public struct BuildingPrefab
+    {
+        public BuildingType type;
+        public GameObject prefab;
+    }
+    
     [Header("Placement Settings")]
     [Tooltip("Layers that are considered valid for building placement")]
     public LayerMask placementLayerMask = ~0; // Default to all layers
@@ -23,7 +37,15 @@ public class BuildingPlacementSystem : MonoBehaviour
     [Tooltip("Color when placement is invalid")]
     public Color invalidPlacementColor = Color.red;
     
+    [Tooltip("The type of building to place / 要放置的建筑类型")]
+    public BuildingType selectedBuildingType = BuildingType.ArrowTower;
+
+    [Header("Building Prefabs")]
+    [Tooltip("Mapping of building types to their prefabs")]
+    public BuildingPrefab[] buildingPrefabs;
+
     private GameObject placementPreview;
+    private GameObject ghostPreview;
     private BuildingBase currentBuildingToPlace;
     private bool isPlacementMode = false;
     private GridCell currentHighlightedCell;
@@ -419,6 +441,105 @@ public class BuildingPlacementSystem : MonoBehaviour
     public BuildingBase GetCurrentBuildingToPlace()
     {
         return isPlacementMode ? currentBuildingToPlace : null;
+    }
+    
+    /// <summary>
+    /// Select which building type to place
+    /// 选择要放置的建筑类型
+    /// </summary>
+    public void SelectBuildingToPlace(BuildingType type)
+    {
+        selectedBuildingType = type;
+        
+        // Update ghost preview
+        if (ghostPreview != null)
+        {
+            Destroy(ghostPreview);
+        }
+        
+        // Create new ghost preview
+        GameObject prefabToUse = GetPrefabForType(type);
+        if (prefabToUse != null)
+        {
+            ghostPreview = Instantiate(prefabToUse);
+            ghostPreview.SetActive(false);
+            
+            // Make it transparent
+            Renderer[] renderers = ghostPreview.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.materials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    materials[i].color = new Color(materials[i].color.r, 
+                                                materials[i].color.g, 
+                                                materials[i].color.b, 0.5f);
+                }
+                renderer.materials = materials;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Get prefab for building type
+    /// 根据建筑类型获取预制体
+    /// </summary>
+    GameObject GetPrefabForType(BuildingType type)
+    {
+        foreach (BuildingPrefab bp in buildingPrefabs)
+        {
+            if (bp.type == type)
+            {
+                return bp.prefab;
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Clean up resources on destroy
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            _instance = null;
+        }
+    }
+    
+    #endregion
+    
+    #region Singleton
+    
+    private static BuildingPlacementSystem _instance;
+    public static BuildingPlacementSystem Instance 
+    { 
+        get 
+        { 
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<BuildingPlacementSystem>();
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject("BuildingPlacementSystem");
+                    _instance = singletonObject.AddComponent<BuildingPlacementSystem>();
+                }
+            }
+            return _instance; 
+        } 
+    }
+    
+    private void Awake()
+    {
+        // Singleton pattern implementation
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
     
     #endregion

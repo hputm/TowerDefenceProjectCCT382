@@ -131,7 +131,7 @@ public class TowerUpgradeSystem : MonoBehaviour
     public ResourceManager resourceManager; // Reference to resource manager
     
     [Tooltip("Reference to UI manager / UI管理器引用")]
-    public MonoBehaviour uiManager;                 // Reference to UI manager
+    public TowerUpgradeUI uiManager;                 // Reference to UI manager
 
     [Header("Audio Settings / 音效设置")]
     [Tooltip("Upgrade sound effect / 升级音效")]
@@ -508,6 +508,43 @@ public class TowerUpgradeSystem : MonoBehaviour
         // Return the minimum progress (bottleneck resource)
         // Currently focused on gold, optional resources are secondary
         return Mathf.Min(goldProgress, woodProgress, stoneProgress);
+    }
+
+    /// <summary>
+    /// Sell the tower and refund resources
+    /// 出售塔并退还资源
+    /// </summary>
+    public void SellTower()
+    {
+        // Refund a percentage of the spent gold
+        int refundAmount = Mathf.FloorToInt(requiredCost.goldRequired * 0.5f);
+        
+        if (resourceManager == null)
+        {
+            resourceManager = ResourceManager.Instance;
+        }
+        
+        if (resourceManager != null)
+        {
+            resourceManager.AddGold(refundAmount);
+        }
+        
+        // Remove the building from the grid
+        if (GetComponent<BuildingBase>() != null && GetComponent<BuildingBase>().gridCell != null)
+        {
+            GetComponent<BuildingBase>().gridCell.SetOccupied(null);
+        }
+        
+        // Play sell sound
+        if (audioSource != null && upgradeSound != null)
+        {
+            audioSource.PlayOneShot(upgradeSound);
+        }
+        
+        // Destroy the tower object
+        Destroy(gameObject);
+        
+        Debug.Log($"Tower sold for {refundAmount} gold", this);
     }
 
     // Public getters for UI and other systems

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Manages game resources such as gold, wood, stone, and population.
@@ -16,11 +17,11 @@ public class ResourceManager : MonoBehaviour
     [SerializeField] private int availablePopulation = 10;
     [SerializeField] private int militiaCount = 0;
     
-    // Event to notify other systems when gold changes
-    public System.Action<int> onGoldChanged;
-    public System.Action<int> onWoodChanged;
-    public System.Action<int> onStoneChanged;
-    public System.Action<int, int> onPopulationChanged; // total, available
+    // Events to notify other systems when resources change (using UnityEvent for Inspector visibility)
+    public UnityEvent<int> onGoldChanged;
+    public UnityEvent<int> onWoodChanged;
+    public UnityEvent<int> onStoneChanged;
+    public UnityEvent<int, int> onPopulationChanged; // total, available
     
     private static ResourceManager _instance;
     public static ResourceManager Instance 
@@ -51,6 +52,12 @@ public class ResourceManager : MonoBehaviour
         
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        
+        // Initialize UnityEvents if they haven't been created in the inspector
+        if (onGoldChanged == null) onGoldChanged = new UnityEvent<int>();
+        if (onWoodChanged == null) onWoodChanged = new UnityEvent<int>();
+        if (onStoneChanged == null) onStoneChanged = new UnityEvent<int>();
+        if (onPopulationChanged == null) onPopulationChanged = new UnityEvent<int, int>();
     }
     
     #region Gold Management
@@ -74,6 +81,7 @@ public class ResourceManager : MonoBehaviour
         
         gold += amount;
         onGoldChanged?.Invoke(gold);
+        Debug.Log($"Added {amount} gold. Total: {gold}");
     }
     
     /// <summary>
@@ -88,6 +96,7 @@ public class ResourceManager : MonoBehaviour
         {
             gold -= amount;
             onGoldChanged?.Invoke(gold);
+            Debug.Log($"Removed {amount} gold. Remaining: {gold}");
             return true;
         }
         return false;
@@ -116,6 +125,7 @@ public class ResourceManager : MonoBehaviour
         
         wood += amount;
         onWoodChanged?.Invoke(wood);
+        Debug.Log($"Added {amount} wood. Total: {wood}");
     }
     
     /// <summary>
@@ -130,6 +140,7 @@ public class ResourceManager : MonoBehaviour
         {
             wood -= amount;
             onWoodChanged?.Invoke(wood);
+            Debug.Log($"Removed {amount} wood. Remaining: {wood}");
             return true;
         }
         return false;
@@ -154,6 +165,7 @@ public class ResourceManager : MonoBehaviour
         
         stone += amount;
         onStoneChanged?.Invoke(stone);
+        Debug.Log($"Added {amount} stone. Total: {stone}");
     }
     
     /// <summary>
@@ -168,6 +180,7 @@ public class ResourceManager : MonoBehaviour
         {
             stone -= amount;
             onStoneChanged?.Invoke(stone);
+            Debug.Log($"Removed {amount} stone. Remaining: {stone}");
             return true;
         }
         return false;
@@ -215,6 +228,7 @@ public class ResourceManager : MonoBehaviour
         totalPopulation += amount;
         availablePopulation += amount;
         onPopulationChanged?.Invoke(totalPopulation, availablePopulation);
+        Debug.Log($"Population changed - Total: {totalPopulation}, Available: {availablePopulation}");
     }
     
     /// <summary>

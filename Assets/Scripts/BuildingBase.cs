@@ -58,6 +58,7 @@ public class BuildingBase : MonoBehaviour, IDamageable
     // Events
     public System.Action<BuildingBase> onBuildingDestroyed;
     public System.Action<float> onHealthChanged;
+    public System.Action onBuildingSelected;
     
     public enum PlacementType
     {

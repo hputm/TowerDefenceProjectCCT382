@@ -39,8 +39,13 @@ public class BuildingPlacementSystem : MonoBehaviour
     
     [Tooltip("The type of building to place / 要放置的建筑类型")]
     public BuildingType selectedBuildingType = BuildingType.ArrowTower;
-    
+
+    [Header("Building Prefabs")]
+    [Tooltip("Mapping of building types to their prefabs")]
+    public BuildingPrefab[] buildingPrefabs;
+
     private GameObject placementPreview;
+    private GameObject ghostPreview;
     private BuildingBase currentBuildingToPlace;
     private bool isPlacementMode = false;
     private GridCell currentHighlightedCell;
@@ -490,4 +495,52 @@ public class BuildingPlacementSystem : MonoBehaviour
         }
         return null;
     }
+
+    /// <summary>
+    /// Clean up resources on destroy
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            _instance = null;
+        }
+    }
+    
+    #endregion
+    
+    #region Singleton
+    
+    private static BuildingPlacementSystem _instance;
+    public static BuildingPlacementSystem Instance 
+    { 
+        get 
+        { 
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<BuildingPlacementSystem>();
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject("BuildingPlacementSystem");
+                    _instance = singletonObject.AddComponent<BuildingPlacementSystem>();
+                }
+            }
+            return _instance; 
+        } 
+    }
+    
+    private void Awake()
+    {
+        // Singleton pattern implementation
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+    
+    #endregion
 }

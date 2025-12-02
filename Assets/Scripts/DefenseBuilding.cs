@@ -9,7 +9,7 @@ public class DefenseBuilding : BuildingBase
 {
     [Header("Defense Building Specific")]
     [Tooltip("Whether this building blocks enemy movement")]
-    public bool blocksMovement = true;
+    public new bool blocksMovement = true;
     
     [Tooltip("Whether this building can attack enemies")]
     public bool hasAttackCapability = false;

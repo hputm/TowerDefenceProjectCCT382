@@ -206,12 +206,20 @@ We currently have a partial implementation of the core systems:
 - Support squad-based enemies with tiered stats
 - Handle gold dropping on death
 
-#### EnemySpawner.cs
+#### EnemySpawner.cs ✅
 **Responsibility:** Spawn enemies in waves
 **Functions:**
 - Spawn enemies at appropriate times
 - Manage wave progression
 - Coordinate with GameManager
+- Support EnhancedEnemy system
+
+#### EnemyGroup.cs ✅
+**Responsibility:** Group behavior for squad enemies
+**Functions:**
+- Coordinate movement of group members
+- Handle group cohesion
+- Manage group defeat conditions
 
 ## Team Member Responsibilities
 
@@ -268,6 +276,8 @@ We currently have a partial implementation of the core systems:
 14. GridManager.cs ✅
 15. GridPathfinder.cs ✅
 16. EnhancedEnemy.cs ✅
+17. EnemySpawner.cs ✅
+18. EnemyGroup.cs ✅
 
 ### Phase 2: UI Systems (High Priority)
 1. UIManager.cs
@@ -287,8 +297,7 @@ We currently have a partial implementation of the core systems:
 1. PopulationManager.cs
 
 ### Phase 5: Enhanced Enemy Systems (Lower Priority)
-1. EnemyGroup.cs
-2. EnemySpawner.cs
+1. EnemySpawner.cs ✅
 
 ## Integration Points
 
@@ -343,6 +352,7 @@ We currently have a partial implementation of the core systems:
 - Combat systems with health bars ✅
 - Grid-based map system ✅
 - Enemy AI system ✅
+- Enemy group system ✅
 
 ### Milestone 2: Complete Core Systems
 - All defensive building types implemented ✅

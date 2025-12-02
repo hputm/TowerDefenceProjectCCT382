@@ -185,11 +185,11 @@ public class EnemySpawner : MonoBehaviour
                 return;
             }
 
-            // Check if prefab has EnemyDefiner component
-            var definer = enemyPrefabs[i].prefab.GetComponent<EnemyDefiner>();
-            if (definer == null)
+            // Check if prefab has EnhancedEnemy component
+            var enemy = enemyPrefabs[i].prefab.GetComponent<EnhancedEnemy>();
+            if (enemy == null)
             {
-                Debug.LogWarning($"敌人预制体 {enemyPrefabs[i].prefab.name} 缺少 EnemyDefiner 组件 / Enemy prefab {enemyPrefabs[i].prefab.name} missing EnemyDefiner component", this);
+                Debug.LogWarning($"敌人预制体 {enemyPrefabs[i].prefab.name} 缺少 EnhancedEnemy 组件 / Enemy prefab {enemyPrefabs[i].prefab.name} missing EnhancedEnemy component", this);
             }
         }
     }
@@ -276,8 +276,8 @@ public class EnemySpawner : MonoBehaviour
                 // Spawn enemy
                 GameObject enemy = Instantiate(selectedEnemy.prefab, spawnPoint.position, spawnPoint.rotation);
                 
-                // Configure enemy definer based on wave and squad settings
-                ConfigureEnemyDefiner(enemy, selectedEnemy);
+                // Configure enemy based on wave and squad settings
+                ConfigureEnemy(enemy, selectedEnemy);
                 
                 // Add wave info
                 var enemyComponent = enemy.GetComponent<Enemy>();
@@ -292,19 +292,18 @@ public class EnemySpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Configure enemy definer based on current wave and squad settings
-    /// 根据当前波次和战团设置配置敌人定义器
+    /// Configure enemy based on current wave and squad settings
     /// </summary>
-    void ConfigureEnemyDefiner(GameObject enemy, EnemyPrefabData enemyData)
+    void ConfigureEnemy(GameObject enemy, EnemyPrefabData enemyData)
     {
-        var definer = enemy.GetComponent<EnemyDefiner>();
-        if (definer != null)
+        var enhancedEnemy = enemy.GetComponent<EnhancedEnemy>();
+        if (enhancedEnemy != null)
         {
             // Apply squad settings if this is a squad member
             if (enemyData.isSquad)
             {
-                definer.isSquadMember = true;
-                definer.squadTier = enemyData.squadTier;
+                enhancedEnemy.isSquadMember = true;
+                enhancedEnemy.squadTier = enemyData.squadTier;
             }
 
             // Apply difficulty scaling based on current wave
@@ -313,18 +312,15 @@ public class EnemySpawner : MonoBehaviour
                 float difficultyScale = 1.0f + (currentWave * difficultyMultiplierPerWave);
                 
                 // Scale health
-                definer.currentMaxHealth *= difficultyScale;
-                definer.currentHealth = definer.currentMaxHealth;
+                enhancedEnemy.maxHealth *= difficultyScale;
+                enhancedEnemy.currentHealth = enhancedEnemy.maxHealth;
                 
                 // Scale damage
-                definer.currentAttackDamage *= difficultyScale;
+                enhancedEnemy.attackDamage *= difficultyScale;
                 
                 // Scale other stats as needed
-                definer.currentAttackRange *= (1.0f + (currentWave * difficultyMultiplierPerWave * 0.05f)); // Smaller range increase
+                enhancedEnemy.attackRange *= (1.0f + (currentWave * difficultyMultiplierPerWave * 0.05f)); // Smaller range increase
             }
-
-            // Reinitialize stats to apply changes
-            definer.ApplyStatsToComponents();
         }
     }
 

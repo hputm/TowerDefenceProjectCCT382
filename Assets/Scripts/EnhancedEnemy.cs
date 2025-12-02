@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Enhanced enemy implementation that combines movement, combat, and stat definition
@@ -145,6 +146,9 @@ public class EnhancedEnemy : MonoBehaviour, IDamageable
     private BuildingBase targetBuilding;
     private float attackCooldown = 0f;
     
+    // Group reference
+    private GroupMember groupMember;
+    
     // Events
     public System.Action<float> onHealthChanged;
     public System.Action onEnemyDeath;
@@ -153,6 +157,7 @@ public class EnhancedEnemy : MonoBehaviour, IDamageable
     {
         InitializeStats();
         FindPath();
+        groupMember = GetComponent<GroupMember>();
     }
 
     void Update()
@@ -333,6 +338,18 @@ public class EnhancedEnemy : MonoBehaviour, IDamageable
             
         // Get current target position
         Vector3 targetPos = path[currentPathIndex];
+        
+        // If part of a group, consider group formation
+        if (groupMember != null && groupMember.group != null)
+        {
+            // Group members follow their formation positions
+            // The leader follows the path directly
+            if (groupMember.group.GetLeader() != this)
+            {
+                // Non-leaders follow formation - their movement is handled by EnemyGroup
+                return;
+            }
+        }
         
         // Move towards target
         Vector3 direction = (targetPos - transform.position).normalized;
@@ -529,6 +546,12 @@ public class EnhancedEnemy : MonoBehaviour, IDamageable
     {
         onEnemyDeath?.Invoke();
         
+        // Remove from group if part of one
+        if (groupMember != null && groupMember.group != null)
+        {
+            groupMember.group.RemoveMember(this);
+        }
+        
         // Drop gold
         DropGold();
         
@@ -583,6 +606,12 @@ public class EnhancedEnemy : MonoBehaviour, IDamageable
         if (gameManager != null)
         {
             gameManager.OnEnemyReachedKeep();
+        }
+        
+        // Remove from group if part of one
+        if (groupMember != null && groupMember.group != null)
+        {
+            groupMember.group.RemoveMember(this);
         }
         
         // Destroy the enemy

@@ -232,10 +232,10 @@ public class EnemyDefiner : MonoBehaviour
 
     [Header("Game References / 游戏引用")]
     [Tooltip("Reference to enemy health system / 敌人血量系统引用")]
-    public Enemy enemyHealth;
+    public EnemyHealth enemyHealth; // 明确使用 EnemyHealth 组件
     
-    [Tooltip("Reference to enemy movement system / 敌人移动系统引用")]
-    public Enemy enemyMovement;
+    [Tooltip("Reference to the main Enemy component for movement speed / 主 Enemy 组件引用，用于移动速度")]
+    public Enemy enemyCore; // 重命名以明确这是主敌人行为组件
     
     [Tooltip("Reference to resource manager for gold drops / 资源管理器引用用于金币掉落")]
     public TowerAttackHealth resourceManager;
@@ -252,7 +252,7 @@ public class EnemyDefiner : MonoBehaviour
         EnemyStats baseStats = GetBaseStatsForType(enemyType);
         
         // Apply base stats
-        currentMaxHealth = baseStats.maxHealth;
+        float maxHealth = baseStats.maxHealth;
         currentAttackRange = baseStats.attackRange;
         currentAttackDamage = baseStats.attackDamage;
         currentAttackSpeed = baseStats.attackSpeed;
@@ -287,14 +287,14 @@ public class EnemyDefiner : MonoBehaviour
                     break;
             }
 
-            currentMaxHealth *= healthMultiplier;
+            maxHealth *= healthMultiplier;
             currentAttackDamage *= damageMultiplier;
             currentMinGold = Mathf.RoundToInt(currentMinGold * goldMultiplier);
             currentMaxGold = Mathf.RoundToInt(currentMaxGold * goldMultiplier);
         }
 
-        // Initialize current health
-        currentHealth = currentMaxHealth;
+        // Use the SetMaxHealth method to properly initialize and synchronize with EnemyHealth component
+        SetMaxHealth(maxHealth);
     }
 
     /// <summary>
@@ -342,14 +342,14 @@ public class EnemyDefiner : MonoBehaviour
             enemyHealth.SetArmor(currentArmor);
         }
 
-        // Apply to movement system if available
-        if (enemyMovement == null)
+        // Apply movement speed to the core Enemy component
+        if (enemyCore == null)
         {
-            enemyMovement = GetComponent<Enemy>();
+            enemyCore = GetComponent<Enemy>();
         }
-        if (enemyMovement != null)
+        if (enemyCore != null)
         {
-            enemyMovement.speed = currentMoveSpeed;
+            enemyCore.speed = currentMoveSpeed; // 直接设置速度
         }
     }
 
@@ -514,10 +514,17 @@ public class EnemyDefiner : MonoBehaviour
     public bool IsAlive() => currentHealth > 0;
     
     // Public setters for dynamic modifications
+    // Public setters for dynamic modifications
     public void SetCurrentHealth(float health) 
     { 
         currentHealth = Mathf.Clamp(health, 0, currentMaxHealth); 
-        if (enemyHealth != null) enemyHealth.SetCurrentHealth(currentHealth);
+        if (enemyHealth != null) 
+        {
+            enemyHealth.SetCurrentHealth(currentHealth);
+        }
+        // 如果没有找到 EnemyHealth 组件，则只更新内部状态。
+        // 更新 Enemy 组件中的生命值超出了本脚本的职责范围，
+        // 因为 Enemy 组件可能不包含生命值逻辑。
     }
     
     public void SetMaxHealth(float maxHealth) 
@@ -525,6 +532,11 @@ public class EnemyDefiner : MonoBehaviour
         float healthRatio = currentHealth / currentMaxHealth;
         currentMaxHealth = maxHealth;
         currentHealth = maxHealth * healthRatio;
-        if (enemyHealth != null) enemyHealth.SetMaxHealth(maxHealth);
+        if (enemyHealth != null) 
+        {
+            enemyHealth.SetMaxHealth(maxHealth);
+            enemyHealth.SetCurrentHealth(currentHealth); // 同步当前生命值
+        }
+        // 同样，如果 EnemyHealth 不存在，我们只更新内部状态。
     }
 }

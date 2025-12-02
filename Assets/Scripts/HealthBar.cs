@@ -96,7 +96,7 @@ public class HealthBar : MonoBehaviour
         if (building != null)
         {
             building.onHealthChanged += OnHealthChanged;
-            building.onBuildingDestroyed += OnTargetDeath;
+            building.onBuildingDestroyed += OnBuildingDestroyed;
         }
     }
     
@@ -114,9 +114,9 @@ public class HealthBar : MonoBehaviour
     }
     
     /// <summary>
-    /// Called when the target dies/gets destroyed
+    /// Called when the target enemy is destroyed
     /// </summary>
-    private void OnTargetDeath()
+    void OnTargetDeath()
     {
         // Unsubscribe from events
         Enemy enemy = target as Enemy;
@@ -130,8 +130,21 @@ public class HealthBar : MonoBehaviour
         if (building != null)
         {
             building.onHealthChanged -= OnHealthChanged;
-            building.onBuildingDestroyed -= OnTargetDeath;
+            building.onBuildingDestroyed -= OnBuildingDestroyed;
         }
+        
+        // Destroy the health bar
+        Destroy(gameObject);
+    }
+    
+    /// <summary>
+    /// Called when the target building is destroyed
+    /// </summary>
+    void OnBuildingDestroyed(BuildingBase building)
+    {
+        // Unsubscribe from events
+        building.onHealthChanged -= OnHealthChanged;
+        building.onBuildingDestroyed -= OnBuildingDestroyed;
         
         // Destroy the health bar
         Destroy(gameObject);

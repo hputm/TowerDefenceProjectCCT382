@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private EnemySpawner enemySpawner;
     
     private GameState currentState = GameState.Menu;
-    private bool gameStarted = false;
+    // private bool gameStarted = false;  // Not currently used
     
     // Events for game state changes
     public System.Action<GameState> onGameStateChanged;

@@ -233,7 +233,7 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    void StartWave()
+    public void StartWave()
     {
         m_IsInWave = true;
         m_Timer = 0f;

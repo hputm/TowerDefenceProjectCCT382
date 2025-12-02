@@ -131,7 +131,7 @@ public class TowerUpgradeSystem : MonoBehaviour
     public ResourceManager resourceManager; // Reference to resource manager
     
     [Tooltip("Reference to UI manager / UI管理器引用")]
-    public building_definer uiManager;                 // Reference to UI manager
+    public MonoBehaviour uiManager;                 // Reference to UI manager
 
     [Header("Audio Settings / 音效设置")]
     [Tooltip("Upgrade sound effect / 升级音效")]
@@ -141,8 +141,8 @@ public class TowerUpgradeSystem : MonoBehaviour
     public AudioSource audioSource;             // Audio source component
 
     // Private variables
-    private bool isUpgrading = false;
-    private float upgradeProgress = 0f;
+    // private bool isUpgrading = false;        // Not currently used
+    // private float upgradeProgress = 0f;      // Not currently used
 
     void Start()
     {
@@ -244,7 +244,7 @@ public class TowerUpgradeSystem : MonoBehaviour
         // Check wave requirement
         if (requiredCost.requiredWave > 0)
         {
-            var gameManager = FindObjectOfType<GameManager>();
+            var gameManager = FindFirstObjectByType<GameManager>();
             if (gameManager != null && gameManager.GetCurrentWave() < requiredCost.requiredWave)
             {
                 Debug.Log($"Wave {requiredCost.requiredWave} required for upgrade", this);
@@ -313,7 +313,12 @@ public class TowerUpgradeSystem : MonoBehaviour
         // Update UI
         if (uiManager != null)
         {
-            uiManager.UpdateTowerUpgradeUI(this);
+            // Check if uiManager has the UpdateTowerUpgradeUI method
+            var upgradeUI = uiManager as TowerUpgradeUI;
+            if (upgradeUI != null)
+            {
+                upgradeUI.UpdateTowerUpgradeUI(this);
+            }
         }
 
         Debug.Log($"Tower {name} upgraded to {currentTier}. Gold spent: {requiredCost.goldRequired}", this);
@@ -343,9 +348,9 @@ public class TowerUpgradeSystem : MonoBehaviour
     /// </summary>
     void ApplyUpgradeEffects()
     {
-        // Get the tower's attack component (assuming it has one)
-        var towerAttack = GetComponent<TowerAttack>(); // Replace with your tower attack component
-        if (towerAttack != null)
+        // Get the BuildingBase component which contains shared properties
+        var buildingBase = GetComponent<BuildingBase>();
+        if (buildingBase != null)
         {
             // Apply damage multiplier based on tier
             float damageMultiplier = 1.0f;
@@ -358,8 +363,9 @@ public class TowerUpgradeSystem : MonoBehaviour
                     damageMultiplier = 2.0f; // 100% more damage
                     break;
             }
-            towerAttack.SetDamageMultiplier(damageMultiplier);
-            
+            // Directly modify the attack damage
+            buildingBase.attackDamage = Mathf.RoundToInt(buildingBase.attackDamage * damageMultiplier);
+
             // Apply range multiplier
             float rangeMultiplier = 1.0f;
             switch (currentTier)
@@ -371,13 +377,10 @@ public class TowerUpgradeSystem : MonoBehaviour
                     rangeMultiplier = 1.4f; // 40% more range
                     break;
             }
-            towerAttack.SetRangeMultiplier(rangeMultiplier);
-        }
+            // Directly modify the attack range
+            buildingBase.attackRange *= rangeMultiplier;
 
-        // Update tower health if applicable
-        var healthComponent = GetComponent<TowerHealth>(); // Replace with your health component
-        if (healthComponent != null)
-        {
+            // Update max health based on tier
             float healthMultiplier = 1.0f;
             switch (currentTier)
             {
@@ -388,7 +391,9 @@ public class TowerUpgradeSystem : MonoBehaviour
                     healthMultiplier = 2.0f;
                     break;
             }
-            healthComponent.SetHealthMultiplier(healthMultiplier);
+            // Directly modify max and current health
+            buildingBase.maxHealth = Mathf.RoundToInt(buildingBase.maxHealth * healthMultiplier);
+            buildingBase.currentHealth = buildingBase.maxHealth;
         }
     }
 

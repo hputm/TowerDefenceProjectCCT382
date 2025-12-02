@@ -414,7 +414,7 @@ public class EnemyDefiner : MonoBehaviour
     {
         if (resourceManager == null)
         {
-            resourceManager = FindObjectOfType<GameResourceManager>();
+            resourceManager = ResourceManager.Instance;
         }
 
         if (resourceManager != null)

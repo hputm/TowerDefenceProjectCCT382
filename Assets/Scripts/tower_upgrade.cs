@@ -127,7 +127,7 @@ public class TowerUpgradeSystem : MonoBehaviour
 
     [Header("Game References / 游戏引用")]
     [Tooltip("Reference to resource manager / 资源管理器引用")]
-    public building_definer resourceManager; // Reference to resource manager
+    public ResourceManager resourceManager; // Reference to resource manager
     
     [Tooltip("Reference to UI manager / UI管理器引用")]
     public building_definer uiManager;                 // Reference to UI manager
@@ -151,16 +151,16 @@ public class TowerUpgradeSystem : MonoBehaviour
 
     void ValidateConfiguration()
     {
-        /*if (resourceManager == null)
+        if (resourceManager == null)
         {
-            resourceManager = FindObjectOfType<GameResourceManager>();
+            resourceManager = ResourceManager.Instance;
             if (resourceManager == null)
             {
-                Debug.LogError("GameResourceManager not found in scene", this);
+                Debug.LogError("ResourceManager not found in scene", this);
             }
         }
 
-        if (uiManager == null)
+        /*if (uiManager == null)
         {
             uiManager = FindObjectOfType<UIManager>();
             if (uiManager == null)

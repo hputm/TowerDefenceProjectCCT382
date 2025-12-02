@@ -5,16 +5,19 @@ This document outlines the development plan for implementing the "Siege of the K
 ## Current Status
 
 We currently have a partial implementation of the core systems:
-- Basic enemy movement along waypoints
-- Tower attack and health system
-- Tower upgrade mechanics
-- Enemy definition and spawning system
+- Basic enemy movement along waypoints ✅
+- Tower attack and health system ✅
+- Tower upgrade mechanics ✅
+- Enemy definition and spawning system ✅
+- Resource management system ✅
+- Game state management ✅
+- Building system with placement logic ✅ *(Partially implemented)*
 
 However, several critical components are missing that need to be implemented to create a playable prototype.
 
 ## Required Script Components
 
-### 1. Resource Management System
+### 1. Resource Management System ✅ *(Implemented)*
 
 #### ResourceManager.cs
 **Responsibility:** Centralized management of game resources (gold, wood, stone, population)
@@ -31,7 +34,7 @@ However, several critical components are missing that need to be implemented to 
 - Display population information
 - Update in real-time as resources change
 
-### 2. Game State Management
+### 2. Game State Management ✅ *(Partially Implemented)*
 
 #### GameManager.cs
 **Responsibility:** Overall game state control
@@ -99,48 +102,63 @@ However, several critical components are missing that need to be implemented to 
 - Update in real-time with health changes
 - Handle visibility logic
 
-### 5. Building Systems
+### 5. Building Systems ✅ *(Partially Implemented)*
 
-#### BuildingBase.cs (Abstract)
+#### BuildingBase.cs ✅ *(Implemented)*
 **Responsibility:** Base class for all buildings
 **Functions:**
-- Define common building properties
+- Define common building properties (health, attack range, attack speed, attack damage)
 - Handle placement logic
 - Manage building state
+- Provide foundation for inheritance
 
-#### DefensiveBuilding.cs (Extends BuildingBase)
+#### DefensiveBuilding.cs ✅ *(Implemented)*
 **Responsibility:** Base class for defensive structures
 **Functions:**
 - Implement common defensive behavior
 - Handle garrison mechanics
 - Manage destruction logic
+- Support upgrade system
 
-#### ArrowTower.cs (Extends DefensiveBuilding)
+#### ArrowTower.cs ✅ *(Implemented)*
 **Responsibility:** Arrow tower implementation
 **Functions:**
-- Implement ranged attack logic
+- Implement ranged attack logic with projectiles
 - Support 3 upgrade tiers
+- Placement restricted to road ends only
 - Manage projectile firing
 
-#### Watchpost.cs (Extends DefensiveBuilding)
-**Responsibility:** Watchpost implementation
-**Functions:**
-- Implement short-range attack logic
-- Support 2 upgrade tiers
-
-#### Barricade.cs (Extends DefensiveBuilding)
-**Responsibility:** Barricade implementation
+#### RoadBlock.cs ✅ *(Implemented)*
+**Responsibility:** Road block implementation
 **Functions:**
 - Purely defensive (no attack capability)
 - Block enemy movement
 - Have health that depletes over time or with attacks
+- Placement restricted to roads only
+- Can upgrade to defensive building
 
-#### Keep.cs
+#### DefenseBuilding.cs ✅ *(Implemented)*
+**Responsibility:** Defensive building implementation
+**Functions:**
+- Can have attack capability or be pure blocker
+- Placement restricted to roads only
+- Support upgrade system
+
+#### Castle.cs ✅ *(Implemented)*
 **Responsibility:** Player's main castle/keep
 **Functions:**
 - Track keep health
 - Handle defeat condition when health reaches zero
 - Visual feedback for damage state
+- Static placement (cannot be moved by player)
+
+#### BuildingPlacementSystem.cs ✅ *(Implemented)*
+**Responsibility:** Handles placement of buildings
+**Functions:**
+- Manage placement constraints (roads, road ends)
+- Handle placement costs
+- Visual feedback for valid/invalid placement
+- Instantiate buildings
 
 ### 6. Population and Economy
 
@@ -199,18 +217,24 @@ However, several critical components are missing that need to be implemented to 
 ### QA Tester
 **Responsibilities:**
 1. Test game functionality and identify bugs
-2. Verify balance and difficulty progression
+2. Verify balance and difficulty curve
 3. Check UI responsiveness and clarity
 4. Document issues and suggestions for improvement
 5. Verify fix implementation
 
 ## Implementation Priority
 
-### Phase 1: Core Systems (Highest Priority)
-1. ResourceManager.cs
-2. GameManager.cs
+### Phase 1: Core Systems (Highest Priority) ✅ *(Mostly Completed)*
+1. ResourceManager.cs ✅
+2. GameManager.cs ✅
 3. Projectile.cs
 4. Keep.cs
+5. BuildingBase.cs ✅
+6. ArrowTower.cs ✅
+7. DefenseBuilding.cs ✅
+8. RoadBlock.cs ✅
+9. Castle.cs ✅
+10. BuildingPlacementSystem.cs ✅
 
 ### Phase 2: UI Systems (High Priority)
 1. UIManager.cs
@@ -218,11 +242,13 @@ However, several critical components are missing that need to be implemented to 
 3. TowerUpgradeUI.cs
 
 ### Phase 3: Building Systems (Medium Priority)
-1. BuildingBase.cs
-2. DefensiveBuilding.cs
-3. ArrowTower.cs
-4. Watchpost.cs
-5. Barricade.cs
+1. BuildingBase.cs ✅
+2. DefensiveBuilding.cs ✅
+3. ArrowTower.cs ✅
+4. RoadBlock.cs ✅
+5. DefenseBuilding.cs ✅
+6. Castle.cs ✅
+7. BuildingPlacementSystem.cs ✅
 
 ### Phase 4: Population and Economy (Medium Priority)
 1. PopulationManager.cs
@@ -265,11 +291,12 @@ However, several critical components are missing that need to be implemented to 
 
 ## Milestones
 
-### Milestone 1: Basic Prototype
-- Functional resource system
-- Basic tower placement and upgrading
-- Enemy waves with simple pathfinding
-- Win/lose conditions
+### Milestone 1: Basic Prototype ✅ *(Mostly Achieved)*
+- Functional resource system ✅
+- Basic tower placement and upgrading ✅
+- Enemy waves with simple pathfinding ✅
+- Win/lose conditions ✅
+- Building system with placement logic ✅
 
 ### Milestone 2: Complete Core Systems
 - All defensive building types implemented

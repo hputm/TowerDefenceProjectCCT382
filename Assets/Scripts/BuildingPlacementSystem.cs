@@ -1,0 +1,384 @@
+using UnityEngine;
+
+/// <summary>
+/// Handles the placement of buildings in the game world.
+/// Manages placement constraints, costs, and instantiation of buildings.
+/// </summary>
+public class BuildingPlacementSystem : MonoBehaviour
+{
+    [Header("Placement Settings")]
+    [Tooltip("Layers that are considered valid for building placement")]
+    public LayerMask placementLayerMask = ~0; // Default to all layers
+    
+    [Tooltip("Maximum distance for placement from camera")]
+    public float maxPlacementDistance = 100f;
+    
+    [Header("Visual Feedback")]
+    [Tooltip("Prefab for placement preview visualization")]
+    public GameObject placementPreviewPrefab;
+    
+    [Tooltip("Color when placement is valid")]
+    public Color validPlacementColor = Color.green;
+    
+    [Tooltip("Color when placement is invalid")]
+    public Color invalidPlacementColor = Color.red;
+    
+    private GameObject placementPreview;
+    private BuildingBase currentBuildingToPlace;
+    private bool isPlacementMode = false;
+    
+    // Event to notify when a building is placed
+    public System.Action<BuildingBase> onBuildingPlaced;
+    
+    private static BuildingPlacementSystem _instance;
+    public static BuildingPlacementSystem Instance 
+    { 
+        get 
+        { 
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<BuildingPlacementSystem>();
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject("BuildingPlacementSystem");
+                    _instance = singletonObject.AddComponent<BuildingPlacementSystem>();
+                }
+            }
+            return _instance; 
+        } 
+    }
+    
+    private void Awake()
+    {
+        // Singleton pattern implementation
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+    
+    private void Update()
+    {
+        if (isPlacementMode && currentBuildingToPlace != null)
+        {
+            UpdatePlacementPreview();
+        }
+    }
+    
+    #region Placement Mode Management
+    
+    /// <summary>
+    /// Enter placement mode with a specific building type
+    /// </summary>
+    /// <param name="buildingPrefab">Prefab of the building to place</param>
+    public void EnterPlacementMode(BuildingBase buildingPrefab)
+    {
+        if (buildingPrefab == null) return;
+        
+        // Exit current placement mode if active
+        if (isPlacementMode)
+        {
+            ExitPlacementMode();
+        }
+        
+        currentBuildingToPlace = buildingPrefab;
+        isPlacementMode = true;
+        
+        // Create placement preview
+        CreatePlacementPreview();
+        
+        Debug.Log($"Entered placement mode for {buildingPrefab.GetBuildingType()}", this);
+    }
+    
+    /// <summary>
+    /// Exit placement mode
+    /// </summary>
+    public void ExitPlacementMode()
+    {
+        isPlacementMode = false;
+        currentBuildingToPlace = null;
+        
+        // Destroy placement preview
+        if (placementPreview != null)
+        {
+            Destroy(placementPreview);
+            placementPreview = null;
+        }
+        
+        Debug.Log("Exited placement mode", this);
+    }
+    
+    /// <summary>
+    /// Check if the system is currently in placement mode
+    /// </summary>
+    /// <returns>True if in placement mode</returns>
+    public bool IsInPlacementMode()
+    {
+        return isPlacementMode;
+    }
+    
+    #endregion
+    
+    #region Placement Preview
+    
+    /// <summary>
+    /// Create the placement preview object
+    /// </summary>
+    private void CreatePlacementPreview()
+    {
+        if (currentBuildingToPlace == null) return;
+        
+        // Destroy existing preview if any
+        if (placementPreview != null)
+        {
+            Destroy(placementPreview);
+        }
+        
+        // Create new preview
+        placementPreview = new GameObject("PlacementPreview");
+        
+        // Add visual components to preview
+        // This would typically involve copying the visual components from the building prefab
+        // For now, we'll just add a basic renderer for demonstration
+        var renderer = placementPreview.AddComponent<MeshRenderer>();
+        var filter = placementPreview.AddComponent<MeshFilter>();
+        
+        // Copy mesh and material from the building prefab if available
+        var buildingRenderer = currentBuildingToPlace.GetComponent<Renderer>();
+        var buildingFilter = currentBuildingToPlace.GetComponent<MeshFilter>();
+        
+        if (buildingFilter != null)
+        {
+            filter.mesh = buildingFilter.sharedMesh;
+        }
+        
+        if (buildingRenderer != null)
+        {
+            renderer.material = new Material(buildingRenderer.sharedMaterial);
+        }
+        
+        // Make it transparent
+        if (renderer.material != null)
+        {
+            renderer.material.color = new Color(
+                renderer.material.color.r,
+                renderer.material.color.g,
+                renderer.material.color.b,
+                0.5f);
+        }
+    }
+    
+    /// <summary>
+    /// Update the placement preview position and validity
+    /// </summary>
+    private void UpdatePlacementPreview()
+    {
+        if (placementPreview == null || currentBuildingToPlace == null) return;
+        
+        // Get placement position
+        Vector3 placementPosition;
+        Vector3 surfaceNormal;
+        
+        if (GetPlacementPosition(out placementPosition, out surfaceNormal))
+        {
+            // Update preview position
+            placementPreview.transform.position = placementPosition;
+            placementPreview.transform.rotation = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
+            
+            // Check if placement is valid
+            bool isValid = currentBuildingToPlace.CanBePlacedAt(placementPosition, surfaceNormal);
+            
+            // Update preview appearance
+            UpdatePreviewAppearance(isValid);
+        }
+    }
+    
+    /// <summary>
+    /// Update the visual appearance of the placement preview
+    /// </summary>
+    /// <param name="isValid">Whether the current placement is valid</param>
+    private void UpdatePreviewAppearance(bool isValid)
+    {
+        if (placementPreview == null) return;
+        
+        var renderer = placementPreview.GetComponent<Renderer>();
+        if (renderer != null && renderer.material != null)
+        {
+            // Update color based on validity
+            Color targetColor = isValid ? validPlacementColor : invalidPlacementColor;
+            targetColor.a = 0.5f; // Keep transparency
+            
+            renderer.material.color = targetColor;
+        }
+    }
+    
+    #endregion
+    
+    #region Placement Position Calculation
+    
+    /// <summary>
+    /// Calculate the placement position based on mouse/pointer position
+    /// </summary>
+    /// <param name="position">Output placement position</param>
+    /// <param name="normal">Output surface normal</param>
+    /// <returns>True if a valid placement position was found</returns>
+    private bool GetPlacementPosition(out Vector3 position, out Vector3 normal)
+    {
+        position = Vector3.zero;
+        normal = Vector3.up;
+        
+        // Raycast from camera to find placement position
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        
+        if (Physics.Raycast(ray, out hit, maxPlacementDistance, placementLayerMask))
+        {
+            position = hit.point;
+            normal = hit.normal;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    #endregion
+    
+    #region Building Placement
+    
+    /// <summary>
+    /// Attempt to place the current building at the cursor position
+    /// </summary>
+    /// <returns>True if placement was successful</returns>
+    public bool PlaceCurrentBuilding()
+    {
+        if (!isPlacementMode || currentBuildingToPlace == null) return false;
+        
+        Vector3 placementPosition;
+        Vector3 surfaceNormal;
+        
+        if (GetPlacementPosition(out placementPosition, out surfaceNormal))
+        {
+            // Check if placement is valid
+            if (currentBuildingToPlace.CanBePlacedAt(placementPosition, surfaceNormal))
+            {
+                // Check if player can afford the building
+                if (CanAffordBuilding(currentBuildingToPlace))
+                {
+                    // Place the building
+                    PlaceBuilding(currentBuildingToPlace, placementPosition, surfaceNormal);
+                    return true;
+                }
+                else
+                {
+                    Debug.Log("Cannot afford to place this building", this);
+                }
+            }
+            else
+            {
+                Debug.Log("Invalid placement position", this);
+            }
+        }
+        
+        return false;
+    }
+    
+    /// <summary>
+    /// Place a building at a specific position
+    /// </summary>
+    /// <param name="buildingPrefab">Prefab of the building to place</param>
+    /// <param name="position">Position to place the building</param>
+    /// <param name="rotation">Rotation for the building</param>
+    /// <returns>The instantiated building</returns>
+    public BuildingBase PlaceBuilding(BuildingBase buildingPrefab, Vector3 position, Quaternion rotation)
+    {
+        if (buildingPrefab == null) return null;
+        
+        // Check if placement is valid
+        if (!buildingPrefab.CanBePlacedAt(position, Vector3.up))
+        {
+            Debug.LogWarning($"Cannot place {buildingPrefab.GetBuildingType()} at {position}", this);
+            return null;
+        }
+        
+        // Check if player can afford the building
+        if (!CanAffordBuilding(buildingPrefab))
+        {
+            Debug.LogWarning($"Cannot afford to place {buildingPrefab.GetBuildingType()}", this);
+            return null;
+        }
+        
+        // Spend resources
+        SpendBuildingResources(buildingPrefab);
+        
+        // Instantiate the building
+        BuildingBase newBuilding = Instantiate(buildingPrefab, position, rotation);
+        
+        // Notify listeners
+        onBuildingPlaced?.Invoke(newBuilding);
+        
+        Debug.Log($"Placed {newBuilding.GetBuildingType()} at {position}", this);
+        return newBuilding;
+    }
+    
+    /// <summary>
+    /// Place a building at a specific position with surface alignment
+    /// </summary>
+    /// <param name="buildingPrefab">Prefab of the building to place</param>
+    /// <param name="position">Position to place the building</param>
+    /// <param name="surfaceNormal">Normal of the surface to align with</param>
+    /// <returns>The instantiated building</returns>
+    public BuildingBase PlaceBuilding(BuildingBase buildingPrefab, Vector3 position, Vector3 surfaceNormal)
+    {
+        if (buildingPrefab == null) return null;
+        
+        // Calculate rotation to align with surface
+        Quaternion rotation = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
+        
+        return PlaceBuilding(buildingPrefab, position, rotation);
+    }
+    
+    #endregion
+    
+    #region Resource Management
+    
+    /// <summary>
+    /// Check if the player can afford to place a building
+    /// </summary>
+    /// <param name="building">Building to check</param>
+    /// <returns>True if player has enough resources</returns>
+    private bool CanAffordBuilding(BuildingBase building)
+    {
+        // Integrate with ResourceManager when available
+        // For now, allow all placements
+        return true;
+    }
+    
+    /// <summary>
+    /// Spend resources required for placing a building
+    /// </summary>
+    /// <param name="building">Building being placed</param>
+    private void SpendBuildingResources(BuildingBase building)
+    {
+        // Integrate with ResourceManager when available
+        // This is where you would deduct gold/other resources
+    }
+    
+    #endregion
+    
+    #region Utility Methods
+    
+    /// <summary>
+    /// Get the building that is currently being placed
+    /// </summary>
+    /// <returns>Current building to place, or null if not in placement mode</returns>
+    public BuildingBase GetCurrentBuildingToPlace()
+    {
+        return isPlacementMode ? currentBuildingToPlace : null;
+    }
+    
+    #endregion
+}

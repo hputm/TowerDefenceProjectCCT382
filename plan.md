@@ -5,16 +5,20 @@ This document outlines the development plan for implementing the "Siege of the K
 ## Current Status
 
 We currently have a partial implementation of the core systems:
-- Basic enemy movement along waypoints
-- Tower attack and health system
-- Tower upgrade mechanics
-- Enemy definition and spawning system
-
-However, several critical components are missing that need to be implemented to create a playable prototype.
+- Basic enemy movement along waypoints ✅
+- Tower attack and health system ✅
+- Tower upgrade mechanics ✅
+- Enemy definition and spawning system ✅
+- Resource management system ✅
+- Game state management ✅
+- Building system with placement logic ✅
+- Combat systems ✅
+- Grid-based map system ✅
+- Enemy AI system ✅
 
 ## Required Script Components
 
-### 1. Resource Management System
+### 1. Resource Management System ✅ *(Implemented)*
 
 #### ResourceManager.cs
 **Responsibility:** Centralized management of game resources (gold, wood, stone, population)
@@ -31,7 +35,7 @@ However, several critical components are missing that need to be implemented to 
 - Display population information
 - Update in real-time as resources change
 
-### 2. Game State Management
+### 2. Game State Management ✅ *(Partially Implemented)*
 
 #### GameManager.cs
 **Responsibility:** Overall game state control
@@ -76,9 +80,9 @@ However, several critical components are missing that need to be implemented to 
 - Display building costs
 - Manage placement confirmation/cancellation
 
-### 4. Combat Systems
+### 4. Combat Systems ✅
 
-#### Projectile.cs
+#### Projectile.cs ✅
 **Responsibility:** Projectile behavior and damage delivery
 **Functions:**
 - Move toward targets
@@ -86,63 +90,101 @@ However, several critical components are missing that need to be implemented to 
 - Apply damage on hit
 - Support different projectile types
 
-#### Damageable.cs (Interface)
+#### IDamageable.cs ✅
 **Responsibility:** Standardize damage handling
 **Functions:**
 - Define common damage handling interface
 - Allow consistent damage application across entities
 
-#### HealthBar.cs
+#### HealthBar.cs ✅
 **Responsibility:** Visual health indication
 **Functions:**
 - Display health bars for enemies and towers
 - Update in real-time with health changes
 - Handle visibility logic
 
-### 5. Building Systems
+### 5. Building Systems ✅
 
-#### BuildingBase.cs (Abstract)
+#### BuildingBase.cs ✅
 **Responsibility:** Base class for all buildings
 **Functions:**
-- Define common building properties
+- Define common building properties (health, attack range, attack speed, attack damage)
 - Handle placement logic
 - Manage building state
+- Provide foundation for inheritance
 
-#### DefensiveBuilding.cs (Extends BuildingBase)
+#### DefensiveBuilding.cs ✅
 **Responsibility:** Base class for defensive structures
 **Functions:**
 - Implement common defensive behavior
 - Handle garrison mechanics
 - Manage destruction logic
+- Support upgrade system
 
-#### ArrowTower.cs (Extends DefensiveBuilding)
+#### ArrowTower.cs ✅
 **Responsibility:** Arrow tower implementation
 **Functions:**
-- Implement ranged attack logic
+- Implement ranged attack logic with projectiles
 - Support 3 upgrade tiers
+- Placement restricted to road ends only
 - Manage projectile firing
 
-#### Watchpost.cs (Extends DefensiveBuilding)
-**Responsibility:** Watchpost implementation
-**Functions:**
-- Implement short-range attack logic
-- Support 2 upgrade tiers
-
-#### Barricade.cs (Extends DefensiveBuilding)
-**Responsibility:** Barricade implementation
+#### RoadBlock.cs ✅
+**Responsibility:** Road block implementation
 **Functions:**
 - Purely defensive (no attack capability)
 - Block enemy movement
 - Have health that depletes over time or with attacks
+- Placement restricted to roads only
+- Can upgrade to defensive building
 
-#### Keep.cs
+#### DefenseBuilding.cs ✅
+**Responsibility:** Defensive building implementation
+**Functions:**
+- Can have attack capability or be pure blocker
+- Placement restricted to roads only
+- Support upgrade system
+
+#### Castle.cs ✅
 **Responsibility:** Player's main castle/keep
 **Functions:**
 - Track keep health
 - Handle defeat condition when health reaches zero
 - Visual feedback for damage state
+- Static placement (cannot be moved by player)
 
-### 6. Population and Economy
+#### BuildingPlacementSystem.cs ✅
+**Responsibility:** Handles placement of buildings
+**Functions:**
+- Manage placement constraints (roads, road ends)
+- Handle placement costs
+- Visual feedback for valid/invalid placement
+- Instantiate buildings
+
+### 6. Grid Map System ✅
+
+#### GridCell.cs ✅
+**Responsibility:** Represents individual grid cells
+**Functions:**
+- Define properties of grid cells (road, road end, empty, impassable)
+- Determine what can be placed in each cell
+- Track occupancy by buildings
+
+#### GridManager.cs ✅
+**Responsibility:** Manage the entire grid system
+**Functions:**
+- Create and manage all grid cells
+- Convert between world and grid coordinates
+- Provide access to grid cells
+- Support neighbor queries
+
+#### GridPathfinder.cs ✅
+**Responsibility:** Find paths along road grid cells
+**Functions:**
+- Find paths from start to end positions using road cells
+- Support pathfinding for enemies
+
+### 7. Population and Economy
 
 #### PopulationManager.cs
 **Responsibility:** Population tracking and management
@@ -152,21 +194,32 @@ However, several critical components are missing that need to be implemented to 
 - Handle population growth
 - Enforce population constraints
 
-### 7. Enemy Systems
+### 8. Enemy Systems ✅
 
-#### EnemyGroup.cs
-**Responsibility:** Grouped enemy behavior (2-3 enemies together)
+#### EnhancedEnemy.cs ✅
+**Responsibility:** Combined enemy movement, combat, and stat definition
+**Functions:**
+- Move along roads defined by the grid system
+- Target and attack buildings that block their path
+- Navigate to the endpoint (castle/keep)
+- Support multiple enemy types with configurable stats
+- Support squad-based enemies with tiered stats
+- Handle gold dropping on death
+
+#### EnemySpawner.cs ✅
+**Responsibility:** Spawn enemies in waves
+**Functions:**
+- Spawn enemies at appropriate times
+- Manage wave progression
+- Coordinate with GameManager
+- Support EnhancedEnemy system
+
+#### EnemyGroup.cs ✅
+**Responsibility:** Group behavior for squad enemies
 **Functions:**
 - Coordinate movement of group members
 - Handle group cohesion
 - Manage group defeat conditions
-
-#### EnemyAI.cs
-**Responsibility:** Advanced enemy behavior
-**Functions:**
-- Pathfinding improvements
-- Combat behavior
-- Interaction with defensive structures
 
 ## Team Member Responsibilities
 
@@ -199,18 +252,32 @@ However, several critical components are missing that need to be implemented to 
 ### QA Tester
 **Responsibilities:**
 1. Test game functionality and identify bugs
-2. Verify balance and difficulty progression
+2. Verify balance and difficulty curve
 3. Check UI responsiveness and clarity
 4. Document issues and suggestions for improvement
 5. Verify fix implementation
 
 ## Implementation Priority
 
-### Phase 1: Core Systems (Highest Priority)
-1. ResourceManager.cs
-2. GameManager.cs
-3. Projectile.cs
+### Phase 1: Core Systems (Highest Priority) ✅
+1. ResourceManager.cs ✅
+2. GameManager.cs ✅
+3. Projectile.cs ✅
 4. Keep.cs
+5. BuildingBase.cs ✅
+6. ArrowTower.cs ✅
+7. DefenseBuilding.cs ✅
+8. RoadBlock.cs ✅
+9. Castle.cs ✅
+10. BuildingPlacementSystem.cs ✅
+11. IDamageable.cs ✅
+12. HealthBar.cs ✅
+13. GridCell.cs ✅
+14. GridManager.cs ✅
+15. GridPathfinder.cs ✅
+16. EnhancedEnemy.cs ✅
+17. EnemySpawner.cs ✅
+18. EnemyGroup.cs ✅
 
 ### Phase 2: UI Systems (High Priority)
 1. UIManager.cs
@@ -218,18 +285,19 @@ However, several critical components are missing that need to be implemented to 
 3. TowerUpgradeUI.cs
 
 ### Phase 3: Building Systems (Medium Priority)
-1. BuildingBase.cs
-2. DefensiveBuilding.cs
-3. ArrowTower.cs
-4. Watchpost.cs
-5. Barricade.cs
+1. BuildingBase.cs ✅
+2. DefensiveBuilding.cs ✅
+3. ArrowTower.cs ✅
+4. RoadBlock.cs ✅
+5. DefenseBuilding.cs ✅
+6. Castle.cs ✅
+7. BuildingPlacementSystem.cs ✅
 
 ### Phase 4: Population and Economy (Medium Priority)
 1. PopulationManager.cs
 
 ### Phase 5: Enhanced Enemy Systems (Lower Priority)
-1. EnemyGroup.cs
-2. EnemyAI.cs
+1. EnemySpawner.cs ✅
 
 ## Integration Points
 
@@ -255,6 +323,16 @@ However, several critical components are missing that need to be implemented to 
    - Garrison mechanics
    - Destruction effects
 
+5. **Grid System** integrates with:
+   - Building placement validation
+   - Pathfinding for enemies
+   - Visual representation of map
+
+6. **Enemy System** integrates with:
+   - Grid-based pathfinding
+   - Building attack logic
+   - Game state management
+
 ## Testing Requirements
 
 1. Unit tests for core systems (resources, population, combat calculations)
@@ -265,14 +343,19 @@ However, several critical components are missing that need to be implemented to 
 
 ## Milestones
 
-### Milestone 1: Basic Prototype
-- Functional resource system
-- Basic tower placement and upgrading
-- Enemy waves with simple pathfinding
-- Win/lose conditions
+### Milestone 1: Basic Prototype ✅
+- Functional resource system ✅
+- Basic tower placement and upgrading ✅
+- Enemy waves with simple pathfinding ✅
+- Win/lose conditions ✅
+- Building system with placement logic ✅
+- Combat systems with health bars ✅
+- Grid-based map system ✅
+- Enemy AI system ✅
+- Enemy group system ✅
 
 ### Milestone 2: Complete Core Systems
-- All defensive building types implemented
+- All defensive building types implemented ✅
 - Full UI system with resource display
 - Balanced enemy waves and difficulty progression
 - Population management system

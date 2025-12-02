@@ -11,9 +11,9 @@ We currently have a partial implementation of the core systems:
 - Enemy definition and spawning system ✅
 - Resource management system ✅
 - Game state management ✅
-- Building system with placement logic ✅ *(Partially implemented)*
-
-However, several critical components are missing that need to be implemented to create a playable prototype.
+- Building system with placement logic ✅
+- Combat systems ✅
+- Grid-based map system ✅ *(Implemented)*
 
 ## Required Script Components
 
@@ -79,9 +79,9 @@ However, several critical components are missing that need to be implemented to 
 - Display building costs
 - Manage placement confirmation/cancellation
 
-### 4. Combat Systems
+### 4. Combat Systems ✅
 
-#### Projectile.cs
+#### Projectile.cs ✅
 **Responsibility:** Projectile behavior and damage delivery
 **Functions:**
 - Move toward targets
@@ -89,22 +89,22 @@ However, several critical components are missing that need to be implemented to 
 - Apply damage on hit
 - Support different projectile types
 
-#### Damageable.cs (Interface)
+#### IDamageable.cs ✅
 **Responsibility:** Standardize damage handling
 **Functions:**
 - Define common damage handling interface
 - Allow consistent damage application across entities
 
-#### HealthBar.cs
+#### HealthBar.cs ✅
 **Responsibility:** Visual health indication
 **Functions:**
 - Display health bars for enemies and towers
 - Update in real-time with health changes
 - Handle visibility logic
 
-### 5. Building Systems ✅ *(Partially Implemented)*
+### 5. Building Systems ✅
 
-#### BuildingBase.cs ✅ *(Implemented)*
+#### BuildingBase.cs ✅
 **Responsibility:** Base class for all buildings
 **Functions:**
 - Define common building properties (health, attack range, attack speed, attack damage)
@@ -112,7 +112,7 @@ However, several critical components are missing that need to be implemented to 
 - Manage building state
 - Provide foundation for inheritance
 
-#### DefensiveBuilding.cs ✅ *(Implemented)*
+#### DefensiveBuilding.cs ✅
 **Responsibility:** Base class for defensive structures
 **Functions:**
 - Implement common defensive behavior
@@ -120,7 +120,7 @@ However, several critical components are missing that need to be implemented to 
 - Manage destruction logic
 - Support upgrade system
 
-#### ArrowTower.cs ✅ *(Implemented)*
+#### ArrowTower.cs ✅
 **Responsibility:** Arrow tower implementation
 **Functions:**
 - Implement ranged attack logic with projectiles
@@ -128,7 +128,7 @@ However, several critical components are missing that need to be implemented to 
 - Placement restricted to road ends only
 - Manage projectile firing
 
-#### RoadBlock.cs ✅ *(Implemented)*
+#### RoadBlock.cs ✅
 **Responsibility:** Road block implementation
 **Functions:**
 - Purely defensive (no attack capability)
@@ -137,14 +137,14 @@ However, several critical components are missing that need to be implemented to 
 - Placement restricted to roads only
 - Can upgrade to defensive building
 
-#### DefenseBuilding.cs ✅ *(Implemented)*
+#### DefenseBuilding.cs ✅
 **Responsibility:** Defensive building implementation
 **Functions:**
 - Can have attack capability or be pure blocker
 - Placement restricted to roads only
 - Support upgrade system
 
-#### Castle.cs ✅ *(Implemented)*
+#### Castle.cs ✅
 **Responsibility:** Player's main castle/keep
 **Functions:**
 - Track keep health
@@ -152,7 +152,7 @@ However, several critical components are missing that need to be implemented to 
 - Visual feedback for damage state
 - Static placement (cannot be moved by player)
 
-#### BuildingPlacementSystem.cs ✅ *(Implemented)*
+#### BuildingPlacementSystem.cs ✅
 **Responsibility:** Handles placement of buildings
 **Functions:**
 - Manage placement constraints (roads, road ends)
@@ -160,7 +160,24 @@ However, several critical components are missing that need to be implemented to 
 - Visual feedback for valid/invalid placement
 - Instantiate buildings
 
-### 6. Population and Economy
+### 6. Grid Map System ✅ *(Implemented)*
+
+#### GridCell.cs ✅
+**Responsibility:** Represents individual grid cells
+**Functions:**
+- Define properties of grid cells (road, road end, empty, impassable)
+- Determine what can be placed in each cell
+- Track occupancy by buildings
+
+#### GridManager.cs ✅
+**Responsibility:** Manage the entire grid system
+**Functions:**
+- Create and manage all grid cells
+- Convert between world and grid coordinates
+- Provide access to grid cells
+- Support neighbor queries
+
+### 7. Population and Economy
 
 #### PopulationManager.cs
 **Responsibility:** Population tracking and management
@@ -170,7 +187,7 @@ However, several critical components are missing that need to be implemented to 
 - Handle population growth
 - Enforce population constraints
 
-### 7. Enemy Systems
+### 8. Enemy Systems
 
 #### EnemyGroup.cs
 **Responsibility:** Grouped enemy behavior (2-3 enemies together)
@@ -224,10 +241,10 @@ However, several critical components are missing that need to be implemented to 
 
 ## Implementation Priority
 
-### Phase 1: Core Systems (Highest Priority) ✅ *(Mostly Completed)*
+### Phase 1: Core Systems (Highest Priority) ✅
 1. ResourceManager.cs ✅
 2. GameManager.cs ✅
-3. Projectile.cs
+3. Projectile.cs ✅
 4. Keep.cs
 5. BuildingBase.cs ✅
 6. ArrowTower.cs ✅
@@ -235,6 +252,10 @@ However, several critical components are missing that need to be implemented to 
 8. RoadBlock.cs ✅
 9. Castle.cs ✅
 10. BuildingPlacementSystem.cs ✅
+11. IDamageable.cs ✅
+12. HealthBar.cs ✅
+13. GridCell.cs ✅
+14. GridManager.cs ✅
 
 ### Phase 2: UI Systems (High Priority)
 1. UIManager.cs
@@ -281,6 +302,11 @@ However, several critical components are missing that need to be implemented to 
    - Garrison mechanics
    - Destruction effects
 
+5. **Grid System** integrates with:
+   - Building placement validation
+   - Pathfinding for enemies
+   - Visual representation of map
+
 ## Testing Requirements
 
 1. Unit tests for core systems (resources, population, combat calculations)
@@ -291,15 +317,17 @@ However, several critical components are missing that need to be implemented to 
 
 ## Milestones
 
-### Milestone 1: Basic Prototype ✅ *(Mostly Achieved)*
+### Milestone 1: Basic Prototype ✅
 - Functional resource system ✅
 - Basic tower placement and upgrading ✅
 - Enemy waves with simple pathfinding ✅
 - Win/lose conditions ✅
 - Building system with placement logic ✅
+- Combat systems with health bars ✅
+- Grid-based map system ✅
 
 ### Milestone 2: Complete Core Systems
-- All defensive building types implemented
+- All defensive building types implemented ✅
 - Full UI system with resource display
 - Balanced enemy waves and difficulty progression
 - Population management system

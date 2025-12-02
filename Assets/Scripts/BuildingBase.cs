@@ -8,7 +8,7 @@ using UnityEngine;
 /// - Placement logic
 /// - Upgrade system
 /// </summary>
-public class BuildingBase : MonoBehaviour
+public class BuildingBase : MonoBehaviour, IDamageable
 {
     [Header("Building Identification")]
     [Tooltip("Unique identifier for this building type")]
@@ -43,6 +43,9 @@ public class BuildingBase : MonoBehaviour
     
     [Tooltip("Whether this building is a static part of the level (like the castle)")]
     public bool isStaticBuilding = false;
+    
+    // Reference to the grid cell this building is placed on
+    [HideInInspector] public GridCell gridCell;
     
     // Internal variables
     protected bool isInitialized = false;
@@ -125,6 +128,12 @@ public class BuildingBase : MonoBehaviour
     protected virtual void DestroyBuilding()
     {
         Debug.Log($"{buildingType} destroyed at {transform.position}!", this);
+        
+        // Remove building from grid cell
+        if (gridCell != null)
+        {
+            gridCell.RemoveBuilding();
+        }
         
         // Notify listeners
         onBuildingDestroyed?.Invoke(this);
@@ -228,53 +237,34 @@ public class BuildingBase : MonoBehaviour
         // Static buildings cannot be placed
         if (isStaticBuilding) return false;
         
-        // Check placement type constraints
-        switch (placementType)
-        {
-            case PlacementType.RoadOnly:
-                // Would check if position is on a road
-                return IsOnRoad(position);
-                
-            case PlacementType.RoadEndsOnly:
-                // Would check if position is at a road end
-                return IsAtRoadEnd(position);
-                
-            case PlacementType.Anywhere:
-                // No special constraints
-                return true;
-                
-            default:
-                return true;
-        }
+        // Use grid system to check placement
+        GridCell cell = GridManager.Instance.GetCell(position);
+        if (cell == null) return false;
+        
+        return cell.CanPlaceBuilding(this);
     }
     
     /// <summary>
-    /// Check if a position is on a road
+    /// Set the grid cell this building is placed on
     /// </summary>
-    /// <param name="position">Position to check</param>
-    /// <returns>True if position is on a road</returns>
-    protected virtual bool IsOnRoad(Vector3 position)
+    /// <param name="cell">Grid cell</param>
+    public void SetGridCell(GridCell cell)
     {
-        // This would typically interact with a road system
-        // For now, we'll return true as a placeholder
-        return true;
-    }
-    
-    /// <summary>
-    /// Check if a position is at a road end
-    /// </summary>
-    /// <param name="position">Position to check</param>
-    /// <returns>True if position is at a road end</returns>
-    protected virtual bool IsAtRoadEnd(Vector3 position)
-    {
-        // This would typically interact with a road system
-        // For now, we'll return true as a placeholder
-        return true;
+        gridCell = cell;
     }
     
     #endregion
     
-    #region Utility Methods
+    #region IDamageable Implementation
+    
+    /// <summary>
+    /// Get the current health of this building
+    /// </summary>
+    /// <returns>Current health</returns>
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
     
     /// <summary>
     /// Get the maximum health of this building
@@ -286,13 +276,17 @@ public class BuildingBase : MonoBehaviour
     }
     
     /// <summary>
-    /// Get the current health of this building
+    /// Check if this building is dead/destroyed
     /// </summary>
-    /// <returns>Current health</returns>
-    public float GetCurrentHealth()
+    /// <returns>True if health is zero or below</returns>
+    public bool IsDead()
     {
-        return currentHealth;
+        return currentHealth <= 0;
     }
+    
+    #endregion
+    
+    #region Utility Methods
     
     /// <summary>
     /// Get the building type

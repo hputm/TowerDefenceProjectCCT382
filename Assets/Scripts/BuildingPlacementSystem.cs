@@ -26,6 +26,7 @@ public class BuildingPlacementSystem : MonoBehaviour
     private GameObject placementPreview;
     private BuildingBase currentBuildingToPlace;
     private bool isPlacementMode = false;
+    private GridCell currentHighlightedCell;
     
     // Event to notify when a building is placed
     public System.Action<BuildingBase> onBuildingPlaced;
@@ -101,6 +102,7 @@ public class BuildingPlacementSystem : MonoBehaviour
     {
         isPlacementMode = false;
         currentBuildingToPlace = null;
+        currentHighlightedCell = null;
         
         // Destroy placement preview
         if (placementPreview != null)
@@ -182,15 +184,29 @@ public class BuildingPlacementSystem : MonoBehaviour
         // Get placement position
         Vector3 placementPosition;
         Vector3 surfaceNormal;
+        GridCell targetCell;
         
-        if (GetPlacementPosition(out placementPosition, out surfaceNormal))
+        if (GetPlacementPosition(out placementPosition, out surfaceNormal, out targetCell))
         {
+            // Update highlighted cell
+            if (currentHighlightedCell != targetCell)
+            {
+                currentHighlightedCell = targetCell;
+            }
+            
+            // Snap to grid cell center
+            if (targetCell != null)
+            {
+                Vector2Int gridPos = GridManager.Instance.WorldToGrid(placementPosition);
+                placementPosition = GridManager.Instance.GridToWorld(gridPos);
+            }
+            
             // Update preview position
             placementPreview.transform.position = placementPosition;
             placementPreview.transform.rotation = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
             
             // Check if placement is valid
-            bool isValid = currentBuildingToPlace.CanBePlacedAt(placementPosition, surfaceNormal);
+            bool isValid = targetCell != null && targetCell.CanPlaceBuilding(currentBuildingToPlace);
             
             // Update preview appearance
             UpdatePreviewAppearance(isValid);
@@ -225,11 +241,13 @@ public class BuildingPlacementSystem : MonoBehaviour
     /// </summary>
     /// <param name="position">Output placement position</param>
     /// <param name="normal">Output surface normal</param>
+    /// <param name="cell">Output grid cell</param>
     /// <returns>True if a valid placement position was found</returns>
-    private bool GetPlacementPosition(out Vector3 position, out Vector3 normal)
+    private bool GetPlacementPosition(out Vector3 position, out Vector3 normal, out GridCell cell)
     {
         position = Vector3.zero;
         normal = Vector3.up;
+        cell = null;
         
         // Raycast from camera to find placement position
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -239,6 +257,9 @@ public class BuildingPlacementSystem : MonoBehaviour
         {
             position = hit.point;
             normal = hit.normal;
+            
+            // Get the grid cell at this position
+            cell = GridManager.Instance.GetCell(position);
             return true;
         }
         
@@ -259,18 +280,32 @@ public class BuildingPlacementSystem : MonoBehaviour
         
         Vector3 placementPosition;
         Vector3 surfaceNormal;
+        GridCell targetCell;
         
-        if (GetPlacementPosition(out placementPosition, out surfaceNormal))
+        if (GetPlacementPosition(out placementPosition, out surfaceNormal, out targetCell))
         {
+            // Snap to grid cell center
+            if (targetCell != null)
+            {
+                Vector2Int gridPos = GridManager.Instance.WorldToGrid(placementPosition);
+                placementPosition = GridManager.Instance.GridToWorld(gridPos);
+            }
+            
             // Check if placement is valid
-            if (currentBuildingToPlace.CanBePlacedAt(placementPosition, surfaceNormal))
+            if (targetCell != null && targetCell.CanPlaceBuilding(currentBuildingToPlace))
             {
                 // Check if player can afford the building
                 if (CanAffordBuilding(currentBuildingToPlace))
                 {
                     // Place the building
-                    PlaceBuilding(currentBuildingToPlace, placementPosition, surfaceNormal);
-                    return true;
+                    BuildingBase placedBuilding = PlaceBuilding(currentBuildingToPlace, placementPosition, surfaceNormal);
+                    
+                    // Register the building with the grid cell
+                    if (placedBuilding != null && targetCell != null)
+                    {
+                        targetCell.PlaceBuilding(placedBuilding);
+                        return true;
+                    }
                 }
                 else
                 {
@@ -297,8 +332,11 @@ public class BuildingPlacementSystem : MonoBehaviour
     {
         if (buildingPrefab == null) return null;
         
+        // Get the grid cell at this position
+        GridCell cell = GridManager.Instance.GetCell(position);
+        
         // Check if placement is valid
-        if (!buildingPrefab.CanBePlacedAt(position, Vector3.up))
+        if (cell == null || !cell.CanPlaceBuilding(buildingPrefab))
         {
             Debug.LogWarning($"Cannot place {buildingPrefab.GetBuildingType()} at {position}", this);
             return null;
@@ -316,6 +354,9 @@ public class BuildingPlacementSystem : MonoBehaviour
         
         // Instantiate the building
         BuildingBase newBuilding = Instantiate(buildingPrefab, position, rotation);
+        
+        // Register the building with the grid cell
+        cell.PlaceBuilding(newBuilding);
         
         // Notify listeners
         onBuildingPlaced?.Invoke(newBuilding);

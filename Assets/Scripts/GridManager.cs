@@ -38,7 +38,7 @@ public class GridManager : MonoBehaviour
         { 
             if (_instance == null)
             {
-                _instance = FindObjectOfType<GridManager>();
+                _instance = FindFirstObjectByType<GridManager>();
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject("GridManager");

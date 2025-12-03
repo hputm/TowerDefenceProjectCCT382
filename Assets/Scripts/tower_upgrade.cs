@@ -516,6 +516,21 @@ public class TowerUpgradeSystem : MonoBehaviour
     /// </summary>
     public void SellTower()
     {
+        // We need to determine the cost to refund based on current tier
+        UpgradeCost requiredCost = new UpgradeCost();
+        switch (currentTier)
+        {
+            case TowerTier.Tier1:
+                requiredCost.goldRequired = tier2Cost.goldRequired / 2;
+                break;
+            case TowerTier.Tier2:
+                requiredCost.goldRequired = tier3Cost.goldRequired / 2;
+                break;
+            case TowerTier.Tier3:
+                requiredCost.goldRequired = tier3Cost.goldRequired;
+                break;
+        }
+        
         // Refund a percentage of the spent gold
         int refundAmount = Mathf.FloorToInt(requiredCost.goldRequired * 0.5f);
         
@@ -532,7 +547,7 @@ public class TowerUpgradeSystem : MonoBehaviour
         // Remove the building from the grid
         if (GetComponent<BuildingBase>() != null && GetComponent<BuildingBase>().gridCell != null)
         {
-            GetComponent<BuildingBase>().gridCell.SetOccupied(null);
+            GetComponent<BuildingBase>().gridCell.RemoveBuilding();
         }
         
         // Play sell sound

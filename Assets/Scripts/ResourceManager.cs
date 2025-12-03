@@ -30,7 +30,7 @@ public class ResourceManager : MonoBehaviour
         { 
             if (_instance == null)
             {
-                _instance = FindObjectOfType<ResourceManager>();
+                _instance = FindFirstObjectByType<ResourceManager>();
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject("ResourceManager");

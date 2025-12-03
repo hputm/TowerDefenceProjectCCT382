@@ -60,7 +60,7 @@ public class BuildingPlacementSystem : MonoBehaviour
         { 
             if (_instance == null)
             {
-                _instance = FindObjectOfType<BuildingPlacementSystem>();
+                _instance = FindFirstObjectByType<BuildingPlacementSystem>();
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject("BuildingPlacementSystem");
@@ -511,36 +511,7 @@ public class BuildingPlacementSystem : MonoBehaviour
     
     #region Singleton
     
-    private static BuildingPlacementSystem _instance;
-    public static BuildingPlacementSystem Instance 
-    { 
-        get 
-        { 
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<BuildingPlacementSystem>();
-                if (_instance == null)
-                {
-                    GameObject singletonObject = new GameObject("BuildingPlacementSystem");
-                    _instance = singletonObject.AddComponent<BuildingPlacementSystem>();
-                }
-            }
-            return _instance; 
-        } 
-    }
-    
-    private void Awake()
-    {
-        // Singleton pattern implementation
-        if (_instance != null && _instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
+    // 移除重复的_instance、Instance和Awake定义，使用文件前面已有的定义
     
     #endregion
 }

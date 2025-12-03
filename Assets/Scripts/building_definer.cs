@@ -270,7 +270,7 @@ public class TowerAttackHealth : MonoBehaviour
             GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
             
             // Set projectile properties (you'll need to implement this)
-            var projectileScript = projectile.GetComponent<TowerProjectile>();
+            var projectileScript = projectile.GetComponent<Projectile>();
             if (projectileScript != null)
             {
                 projectileScript.Initialize(target, currentAttackDamage, currentProjectileSpeed);
@@ -284,10 +284,10 @@ public class TowerAttackHealth : MonoBehaviour
     /// </summary>
     void ApplyDamageToEnemy(Transform enemy, float damage)
     {
-        var enemyHealth = enemy.GetComponent<EnemyHealth>(); // Replace with your enemy health component
-        if (enemyHealth != null)
+        var enemyComponent = enemy.GetComponent<Enemy>(); // Replace with your enemy health component
+        if (enemyComponent != null)
         {
-            enemyHealth.TakeDamage(damage);
+            enemyComponent.TakeDamage(damage);
         }
     }
 
@@ -321,10 +321,11 @@ public class TowerAttackHealth : MonoBehaviour
         // Play destruction sound, spawn particles, etc.
         
         // Notify game manager or other systems
-        var gameManager = FindObjectOfType<GameManager>();
+        var gameManager = FindFirstObjectByType<GameManager>();
         if (gameManager != null)
         {
-            gameManager.OnTowerDestroyed(this);
+            // GameManager doesn't have OnTowerDestroyed method, using generic logging instead
+            Debug.Log("Tower destroyed: " + gameObject.name);
         }
         
         // Destroy the game object

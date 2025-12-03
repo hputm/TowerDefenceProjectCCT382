@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
         { 
             if (_instance == null)
             {
-                _instance = FindObjectOfType<GameManager>();
+                _instance = FindFirstObjectByType<GameManager>();
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject("GameManager");
@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
             resourceManager = ResourceManager.Instance;
             
         if (enemySpawner == null)
-            enemySpawner = FindObjectOfType<EnemySpawner>();
+            enemySpawner = FindFirstObjectByType<EnemySpawner>();
     }
     
     private void Start()
@@ -217,7 +217,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentState == GameState.Playing)
         {
-            var spawner = FindObjectOfType<EnemySpawner>();
+            var spawner = FindFirstObjectByType<EnemySpawner>();
             if (spawner != null)
             {
                 // Increment wave counter

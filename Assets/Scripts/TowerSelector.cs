@@ -13,6 +13,7 @@ public class TowerSelector : MonoBehaviour
     
     private Camera mainCamera;
     private BuildingBase selectedBuilding;
+    private BuildingPlacementSystem placementSystem;
     
     void Start()
     {
@@ -21,13 +22,15 @@ public class TowerSelector : MonoBehaviour
         // If no UI managers assigned, try to find them
         if (uiManager == null)
         {
-            uiManager = FindObjectOfType<UIManager>();
+            uiManager = FindFirstObjectByType<UIManager>();
         }
         
         if (towerUpgradeUI == null)
         {
-            towerUpgradeUI = FindObjectOfType<TowerUpgradeUI>();
+            towerUpgradeUI = FindFirstObjectByType<TowerUpgradeUI>();
         }
+        
+        placementSystem = FindFirstObjectByType<BuildingPlacementSystem>();
     }
     
     void Update()

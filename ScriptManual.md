@@ -21,6 +21,9 @@ This document serves as a comprehensive guide to all scripts in the tower defens
 - Provides events for building destruction and health changes
 - Handles grid cell placement
 
+**Enums**:
+- `PlacementType`: Anywhere, RoadOnly, RoadEndsOnly, WaterOnly, ImpassableOnly
+
 **Public Properties**:
 - `buildingType`: Unique identifier for the building type
 - `canAttack`: Whether the building can attack enemies
@@ -32,6 +35,7 @@ This document serves as a comprehensive guide to all scripts in the tower defens
 - `isPlayerPlaceable`: Whether players can place this building
 - `isStaticBuilding`: Whether this building is part of the level design
 - `blocksMovement`: Whether enemies can move through this building
+- `placementType`: Where this building can be placed (RoadEndsOnly, RoadOnly, Anywhere, WaterOnly, ImpassableOnly)
 
 **Events**:
 - `onBuildingDestroyed`: Triggered when the building is destroyed
@@ -125,6 +129,7 @@ Place one instance in the scene as the player's base.
 
 **Enums**:
 - `BuildingType`: ArrowTower, RoadBlock, DefenseBuilding
+- `PlacementType`: RoadEndsOnly, RoadOnly, Anywhere
 
 **Public Methods**:
 - `SelectBuildingToPlace(BuildingType type)`: Selects which building type to place
@@ -390,8 +395,10 @@ Attach to health bar UI elements. Automatically connects to IDamageable objects.
 - `SellTower()`: Sells the tower for a resource refund
 - `CanUpgrade()`: Checks if the tower can be upgraded
 - `GetCurrentTier()`: Returns the current upgrade tier
-- `GetNextTier()`: Returns the next upgrade tier
-- `GetUpgradeCost(TowerTier tier)`: Returns the cost to upgrade to a specific tier
+- `GetMaxTier()`: Returns the maximum tier for this tower type
+- `GetNextUpgradeCost()`: Returns the cost to upgrade to the next tier
+- `GetUpgradeProgress()`: Returns progress towards being able to afford the next upgrade
+- `IsMaxTier()`: Checks if the tower is already at its maximum tier
 
 **Usage**:
 Attach to buildings that can be upgraded. Configure upgrade costs in the inspector.

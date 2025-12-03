@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+// Ensure we have access to TowerType enum from building_definer.cs
+using static BuildingDefiner;
+
 /*
  * Tower Upgrade System
  * 

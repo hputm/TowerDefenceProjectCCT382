@@ -116,9 +116,9 @@ public class UIManager : MonoBehaviour
         // Subscribe to game state change events
         if (gameManager != null)
         {
-            gameManager.onGameStateChanged.AddListener(OnGameStateChanged);
-            gameManager.onWaveChanged.AddListener(UpdateWaveDisplay);
-            gameManager.onLivesChanged.AddListener(UpdateLivesDisplay);
+            gameManager.onGameStateChanged += OnGameStateChanged;
+            gameManager.onWaveChanged += UpdateWaveDisplay;
+            gameManager.onLivesChanged += UpdateLivesDisplay;
         }
         
         // Initial UI updates
@@ -248,7 +248,7 @@ public class UIManager : MonoBehaviour
             case GameManager.GameState.Paused:
                 ShowPauseMenu();
                 break;
-            case GameManager.GameState.GameOver:
+            case GameManager.GameState.Defeat:
                 ShowGameOver();
                 break;
             case GameManager.GameState.Victory:
@@ -312,7 +312,7 @@ public class UIManager : MonoBehaviour
     {
         if (gameManager != null)
         {
-            gameManager.StartNewGame();
+            gameManager.StartGame();
         }
     }
     
@@ -441,11 +441,18 @@ public class UIManager : MonoBehaviour
         // Update upgrade cost display
         if (upgradeCostText != null && tower != null)
         {
-            var nextTier = tower.GetNextTier();
-            var cost = tower.GetUpgradeCost(nextTier);
-            if (cost != null)
+            // Get next tier info
+            TowerTier nextTier = (TowerTier)((int)tower.currentTier + 1);
+            bool canUpgrade = nextTier <= tower.maxTier;
+            
+            if (canUpgrade)
             {
-                upgradeCostText.text = $"Upgrade Cost:\nGold: {cost.goldRequired}\nWood: {cost.woodRequired}";
+                // Calculate upgrade cost based on next tier
+                // Using simple formula: 50 gold and 25 wood per tier level
+                int goldCost = 50 * (int)nextTier;
+                int woodCost = 25 * (int)nextTier;
+                
+                upgradeCostText.text = $"Upgrade Cost:\nGold: {goldCost}\nWood: {woodCost}";
             }
             else
             {
@@ -456,7 +463,8 @@ public class UIManager : MonoBehaviour
         // Enable/disable upgrade button based on whether upgrade is possible
         if (upgradeButton != null && tower != null)
         {
-            upgradeButton.interactable = tower.CanUpgrade();
+            TowerTier nextTier = (TowerTier)((int)tower.currentTier + 1);
+            upgradeButton.interactable = nextTier <= tower.maxTier;
         }
     }
     
@@ -479,8 +487,26 @@ public class UIManager : MonoBehaviour
     {
         if (selectedTower != null)
         {
-            selectedTower.UpgradeTower();
-            UpdateTowerUpgradeUI(selectedTower); // Refresh UI
+            // Check if we can upgrade first
+            TowerTier nextTier = (TowerTier)((int)selectedTower.currentTier + 1);
+            if (nextTier <= selectedTower.maxTier)
+            {
+                // Calculate cost for this tier
+                int goldCost = 50 * (int)nextTier;
+                int woodCost = 25 * (int)nextTier;
+                
+                // Check if player has enough resources
+                if (resourceManager.GetGold() >= goldCost && resourceManager.GetWood() >= woodCost)
+                {
+                    // Spend resources
+                    resourceManager.SpendGold(goldCost);
+                    resourceManager.SpendWood(woodCost);
+                    
+                    // Perform upgrade
+                    selectedTower.UpgradeTower();
+                    UpdateTowerUpgradeUI(selectedTower); // Refresh UI
+                }
+            }
         }
     }
     
@@ -496,20 +522,20 @@ public class UIManager : MonoBehaviour
         }
     }
     
-    void OnDestroy()
+    private void OnDestroy()
     {
         // Unsubscribe from events
+        if (gameManager != null)
+        {
+            gameManager.onGameStateChanged -= OnGameStateChanged;
+            gameManager.onWaveChanged -= UpdateWaveDisplay;
+            gameManager.onLivesChanged -= UpdateLivesDisplay;
+        }
+
         if (resourceManager != null)
         {
             resourceManager.onGoldChanged.RemoveListener(UpdateGoldDisplay);
             resourceManager.onWoodChanged.RemoveListener(UpdateWoodDisplay);
-        }
-        
-        if (gameManager != null)
-        {
-            gameManager.onGameStateChanged.RemoveListener(OnGameStateChanged);
-            gameManager.onWaveChanged.RemoveListener(UpdateWaveDisplay);
-            gameManager.onLivesChanged.RemoveListener(UpdateLivesDisplay);
         }
     }
 }

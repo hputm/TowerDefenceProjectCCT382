@@ -13,7 +13,7 @@ public class GridPathfinder : MonoBehaviour
         { 
             if (_instance == null)
             {
-                _instance = FindObjectOfType<GridPathfinder>();
+                _instance = FindFirstObjectByType<GridPathfinder>();
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject("GridPathfinder");
@@ -23,6 +23,8 @@ public class GridPathfinder : MonoBehaviour
             return _instance; 
         } 
     }
+    
+    private GridManager gridManager;
     
     private void Awake()
     {
@@ -35,6 +37,8 @@ public class GridPathfinder : MonoBehaviour
         
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        
+        gridManager = FindFirstObjectByType<GridManager>();
     }
     
     /// <summary>

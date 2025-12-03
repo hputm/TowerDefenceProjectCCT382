@@ -1120,6 +1120,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 28fd502c0598d8640b8584923d6de800, type: 3}
       insertIndex: -1
       addedObject: {fileID: 508127677}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 28fd502c0598d8640b8584923d6de800, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 508127678}
   m_SourcePrefab: {fileID: 100100000, guid: 28fd502c0598d8640b8584923d6de800, type: 3}
 --- !u!1001 &137354398
 PrefabInstance:
@@ -3679,7 +3682,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 508127675}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a5804accdf16c5479a255c02515500e, type: 3}
   m_Name: 
@@ -3687,6 +3690,19 @@ MonoBehaviour:
   speed: 10
   maxHealth: 100
   currentHealth: 0
+--- !u!114 &508127678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508127675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ad7ae9bebc2cba499a1d83bfda7b69e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy2
+  speed: 10
 --- !u!1001 &510300803
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3952,7 +3968,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521840965}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a5804accdf16c5479a255c02515500e, type: 3}
   m_Name: 
@@ -3969,100 +3985,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 521840965}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d6c189c9cfca45cdb9d98d95f8d9b34, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ad7ae9bebc2cba499a1d83bfda7b69e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnhancedEnemy
-  enemyType: 1
-  isSquadMember: 0
-  squadTier: 1
-  refugeeStats:
-    maxHealth: 30
-    attackRange: 1.5
-    attackDamage: 5
-    attackSpeed: 1
-    moveSpeed: 1.5
-    minGold: 1
-    maxGold: 3
-    armor: 0
-    specialAbilities: 
-  banditStats:
-    maxHealth: 60
-    attackRange: 2
-    attackDamage: 12
-    attackSpeed: 1
-    moveSpeed: 2
-    minGold: 3
-    maxGold: 7
-    armor: 0
-    specialAbilities: 
-  axemanStats:
-    maxHealth: 100
-    attackRange: 2.5
-    attackDamage: 25
-    attackSpeed: 1
-    moveSpeed: 1.8
-    minGold: 5
-    maxGold: 12
-    armor: 0
-    specialAbilities: 
-  spearmanStats:
-    maxHealth: 80
-    attackRange: 3
-    attackDamage: 18
-    attackSpeed: 1
-    moveSpeed: 1.6
-    minGold: 5
-    maxGold: 12
-    armor: 0
-    specialAbilities: 
-  knightStats:
-    maxHealth: 200
-    attackRange: 2.2
-    attackDamage: 35
-    attackSpeed: 1
-    moveSpeed: 1.2
-    minGold: 15
-    maxGold: 30
-    armor: 10
-    specialAbilities: 
-  siegeUnitStats:
-    maxHealth: 500
-    attackRange: 5
-    attackDamage: 100
-    attackSpeed: 1
-    moveSpeed: 0.8
-    minGold: 50
-    maxGold: 100
-    armor: 50
-    specialAbilities: 
-  squadMemberStats:
-    maxHealth: 70
-    attackRange: 2
-    attackDamage: 15
-    attackSpeed: 1
-    moveSpeed: 1.8
-    minGold: 8
-    maxGold: 18
-    armor: 0
-    specialAbilities: 
-  squadTier1HealthMultiplier: 1
-  squadTier1DamageMultiplier: 1
-  squadTier1GoldMultiplier: 1
-  squadTier2HealthMultiplier: 1.5
-  squadTier2DamageMultiplier: 1.3
-  squadTier2GoldMultiplier: 1.2
-  squadTier3HealthMultiplier: 2
-  squadTier3DamageMultiplier: 1.8
-  squadTier3GoldMultiplier: 1.5
-  maxHealth: 0
-  currentHealth: 0
-  attackRange: 0
-  attackDamage: 0
-  attackSpeed: 1
-  moveSpeed: 0
-  armor: 0
-  minGold: 0
-  maxGold: 0
+  m_EditorClassIdentifier: '::'
+  speed: 10
 --- !u!1001 &533830093
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4394,7 +4320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &594576533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4639,6 +4565,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f984ceb4bde203e419e61e07b94c2691, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2032021458}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f984ceb4bde203e419e61e07b94c2691, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2032021459}
   m_SourcePrefab: {fileID: 100100000, guid: f984ceb4bde203e419e61e07b94c2691, type: 3}
 --- !u!4 &630814594 stripped
 Transform:
@@ -4987,7 +4916,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &703220080
 Transform:
   m_ObjectHideFlags: 0
@@ -7585,7 +7514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1042838520
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11579,7 +11508,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1495392884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13222,7 +13151,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8987731022998986730, guid: c73e08589b0ccb1479f4a01ac75090a7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -78.4
+      value: -88.58
       objectReference: {fileID: 0}
     - target: {fileID: 8987731022998986730, guid: c73e08589b0ccb1479f4a01ac75090a7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15646,7 +15575,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2032021456}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a5804accdf16c5479a255c02515500e, type: 3}
   m_Name: 
@@ -15654,6 +15583,19 @@ MonoBehaviour:
   speed: 10
   maxHealth: 100
   currentHealth: 0
+--- !u!114 &2032021459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2032021456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ad7ae9bebc2cba499a1d83bfda7b69e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy2
+  speed: 10
 --- !u!1 &2040263015
 GameObject:
   m_ObjectHideFlags: 0
@@ -15669,7 +15611,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2040263016
 Transform:
   m_ObjectHideFlags: 0

@@ -33,7 +33,15 @@ public class Node : MonoBehaviour
         }
 
         GameObject towerToBuild = buildManager.GetTowerToBuild();
-        tower = (GameObject)Instantiate(towerToBuild, transform.position + positionOffset, transform.rotation);
+
+        if (towerToBuild == buildManager.arrowTowerPrefab)
+        {
+            positionOffset = new Vector3(0f, 5.65f, 0f);
+            tower = (GameObject)Instantiate(towerToBuild, transform.position + positionOffset, transform.rotation);
+        } else
+        {
+            tower = (GameObject)Instantiate(towerToBuild, transform.position + positionOffset, transform.rotation);
+        }
     }
 
     void OnMouseEnter ()

@@ -3,8 +3,19 @@ using UnityEngine;
 public class Tower : MonoBehaviour
 {
     public Transform target;
+
+   
     public float range = 15f;
+    public float fireRate = 1f;
+    private float fireCountdown = 0f;
+
+
     public string enemyTag = "Enemy";
+
+    public GameObject bulletPrefab;
+    public Transform firePoint;
+
+   
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -13,11 +24,28 @@ public class Tower : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void Update ()
     {
         if (target == null)
         {
             return;
+        }
+        if (fireCountdown <= 0f) 
+        {
+            Shoot();
+            fireCountdown = 1f / fireRate;
+        }
+        fireCountdown -= Time.deltaTime;
+    }
+
+    void Shoot ()
+    {
+        GameObject bulletGO = (GameObject)Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        Bullet bullet = bulletGO.GetComponent<Bullet>();
+
+        if (bullet != null)
+        {
+            bullet.Seek(target);
         }
     }
     void OnDrawGizmosSelected ()

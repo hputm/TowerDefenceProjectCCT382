@@ -27,7 +27,6 @@ public class WaveSpawner : MonoBehaviour {
 	IEnumerator SpawnWave ()
 	{
 		waveNumber++;
-		Debug.Log("Wave Incoming!");
 
 		for (int i = 0; i < waveNumber; i++)
 		{

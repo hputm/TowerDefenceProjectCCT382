@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 7061218937739678004}
   - component: {fileID: 7992112379885268511}
   - component: {fileID: 186308837865808433}
-  - component: {fileID: -5744399664046901607}
+  - component: {fileID: -5550008795185789111}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,7 +90,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-5744399664046901607
+--- !u!114 &-5550008795185789111
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -12,7 +12,7 @@ public class Tower : MonoBehaviour
 
     public string enemyTag = "Enemy";
 
-    public GameObject bulletPrefab;
+    public GameObject arrowPrefab;
     public Transform firePoint;
 
    
@@ -40,12 +40,12 @@ public class Tower : MonoBehaviour
 
     void Shoot ()
     {
-        GameObject bulletGO = (GameObject)Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        Bullet bullet = bulletGO.GetComponent<Bullet>();
+        GameObject arrowGO = (GameObject)Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
+        Arrow arrow = arrowGO.GetComponent<Arrow>();
 
-        if (bullet != null)
+        if (arrow != null)
         {
-            bullet.Seek(target);
+            arrow.Seek(target);
         }
     }
     void OnDrawGizmosSelected ()

@@ -2425,7 +2425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildManager
   arrowTowerPrefab: {fileID: 945031728697151236, guid: 263e4f0f78658c640ad067d1e59a7df5, type: 3}
-  cannonTowerPrefab: {fileID: 2662708731009560652, guid: 91859d8a685b77b4383cf0af7e6df76b, type: 3}
+  sniperTowerPrefab: {fileID: 2662708731009560652, guid: 91859d8a685b77b4383cf0af7e6df76b, type: 3}
   machineTowerPrefab: {fileID: 6590011637378500472, guid: 58c15fc8e21d1c245a21c3e50cc14211, type: 3}
 --- !u!1001 &345205152
 PrefabInstance:
@@ -16122,7 +16122,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5863474667826773179, guid: 466b3e93eb1a88541902e79ba23bf062, type: 3}
       propertyPath: m_Name
-      value: cannon tower item (1)
+      value: sniper tower item
       objectReference: {fileID: 0}
     - target: {fileID: 7576947286208832689, guid: 466b3e93eb1a88541902e79ba23bf062, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -16151,6 +16151,10 @@ PrefabInstance:
     - target: {fileID: 7576947286208832689, guid: 466b3e93eb1a88541902e79ba23bf062, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7817338875567367181, guid: 466b3e93eb1a88541902e79ba23bf062, type: 3}
+      propertyPath: m_text
+      value: Sniper Tower
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -15,7 +15,7 @@ public class BuildManager : MonoBehaviour
 
     public GameObject arrowTowerPrefab;
 
-    public GameObject cannonTowerPrefab;
+    public GameObject sniperTowerPrefab;
 
     public GameObject machineTowerPrefab;
 

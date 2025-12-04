@@ -16,8 +16,8 @@ public class Shop : MonoBehaviour
 
     public void PurchaseCannonTower ()
     {
-        Debug.Log("Cannon Tower Selected");
-        buildManager.SetTowerToBuild(buildManager.cannonTowerPrefab);
+        Debug.Log("Sniper Tower Selected");
+        buildManager.SetTowerToBuild(buildManager.sniperTowerPrefab);
     }
 
     public void PurchaseMachineTower ()

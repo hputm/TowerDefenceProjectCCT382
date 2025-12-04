@@ -2,27 +2,31 @@ using UnityEngine;
 
 public class Shop : MonoBehaviour
 {
+    public GameObject arrowTower;
+    public GameObject sniperTower;
+    public GameObject machineTower;
+
     BuildManager buildManager;
 
     void Start ()
     {
         buildManager = BuildManager.instance;
     }
-    public void PurchaseArrowTower ()
+    public void SelectArrowTower ()
     {
         Debug.Log("Arrow Tower Selected");
-        buildManager.SetTowerToBuild(buildManager.arrowTowerPrefab);
+        buildManager.SelectTowerToBuild(arrowTower);
     }
 
-    public void PurchaseCannonTower ()
+    public void SelectSniperTower ()
     {
         Debug.Log("Sniper Tower Selected");
-        buildManager.SetTowerToBuild(buildManager.sniperTowerPrefab);
+        buildManager.SelectTowerToBuild(sniperTower);
     }
 
-    public void PurchaseMachineTower ()
+    public void SelectMachineTower ()
     {
         Debug.Log("Machine Tower Selected");
-        buildManager.SetTowerToBuild(buildManager.machineTowerPrefab);
+        buildManager.SelectTowerToBuild(machineTower);
     }
 }

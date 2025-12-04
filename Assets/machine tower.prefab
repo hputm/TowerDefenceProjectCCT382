@@ -105,7 +105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Tower
   target: {fileID: 0}
   range: 12
-  fireRate: 5
+  fireRate: 3.5
   enemyTag: Enemy
   arrowPrefab: {fileID: 6709902208904407956, guid: 62c04f6f098d2e74e9f6cb0b848d29eb, type: 3}
   firePoint: {fileID: 3148824464637017664}

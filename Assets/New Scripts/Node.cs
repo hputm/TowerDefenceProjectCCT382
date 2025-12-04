@@ -20,6 +20,7 @@ public class Node : MonoBehaviour
         buildManager = BuildManager.instance;
     }
 
+
     void OnMouseDown ()
     {
         if (buildManager.GetTowerToBuild() == null)
@@ -33,7 +34,6 @@ public class Node : MonoBehaviour
         }
 
         GameObject towerToBuild = buildManager.GetTowerToBuild();
-
         if (towerToBuild == buildManager.arrowTowerPrefab)
         {
             positionOffset = new Vector3(0f, 5.65f, 0f);

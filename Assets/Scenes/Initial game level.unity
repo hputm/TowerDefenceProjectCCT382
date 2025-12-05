@@ -2375,6 +2375,7 @@ GameObject:
   - component: {fileID: 336661918}
   - component: {fileID: 336661917}
   - component: {fileID: 336661919}
+  - component: {fileID: 336661920}
   m_Layer: 0
   m_Name: Game master
   m_TagString: Untagged
@@ -2427,6 +2428,19 @@ MonoBehaviour:
   arrowTowerPrefab: {fileID: 945031728697151236, guid: 263e4f0f78658c640ad067d1e59a7df5, type: 3}
   sniperTowerPrefab: {fileID: 2662708731009560652, guid: 91859d8a685b77b4383cf0af7e6df76b, type: 3}
   machineTowerPrefab: {fileID: 6590011637378500472, guid: 58c15fc8e21d1c245a21c3e50cc14211, type: 3}
+--- !u!114 &336661920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336661916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1939f3fbf7acb3b4bbd0fdfe08f655d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
+  startMoney: 300
 --- !u!1001 &345205152
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11095,9 +11109,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88589e78cec18354a865cf9e2bb7b60b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shop
-  arrowTower: {fileID: 945031728697151236, guid: 263e4f0f78658c640ad067d1e59a7df5, type: 3}
-  sniperTower: {fileID: 2662708731009560652, guid: 91859d8a685b77b4383cf0af7e6df76b, type: 3}
-  machineTower: {fileID: 6590011637378500472, guid: 58c15fc8e21d1c245a21c3e50cc14211, type: 3}
+  arrowTower:
+    prefab: {fileID: 945031728697151236, guid: 263e4f0f78658c640ad067d1e59a7df5, type: 3}
+    cost: 100
+  sniperTower:
+    prefab: {fileID: 2662708731009560652, guid: 91859d8a685b77b4383cf0af7e6df76b, type: 3}
+    cost: 150
+  machineTower:
+    prefab: {fileID: 6590011637378500472, guid: 58c15fc8e21d1c245a21c3e50cc14211, type: 3}
+    cost: 400
 --- !u!114 &1524036532
 MonoBehaviour:
   m_ObjectHideFlags: 0

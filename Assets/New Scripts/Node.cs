@@ -5,7 +5,7 @@ public class Node : MonoBehaviour
     public Color hoverColor;
     public Vector3 positionOffset;
 
-    private GameObject tower;
+    public GameObject tower;
 
     private Renderer rend;
     private Color startColor;
@@ -23,7 +23,7 @@ public class Node : MonoBehaviour
 
     void OnMouseDown ()
     {
-        if (buildManager.GetTowerToBuild() == null)
+        if (!buildManager.CanBuild)
         {
             return;
         }
@@ -32,21 +32,12 @@ public class Node : MonoBehaviour
             Debug.Log("Can't build there! - display on screen.");
             return;
         }
-
-        GameObject towerToBuild = buildManager.GetTowerToBuild();
-        if (towerToBuild == buildManager.arrowTowerPrefab)
-        {
-            positionOffset = new Vector3(0f, 5.65f, 0f);
-            tower = (GameObject)Instantiate(towerToBuild, transform.position + positionOffset, transform.rotation);
-        } else
-        {
-            tower = (GameObject)Instantiate(towerToBuild, transform.position + positionOffset, transform.rotation);
-        }
+        buildManager.BuildTowerOn(this);
     }
 
     void OnMouseEnter ()
     {
-        if (buildManager.GetTowerToBuild() == null)
+        if (!buildManager.CanBuild)
         {
             return;
         }

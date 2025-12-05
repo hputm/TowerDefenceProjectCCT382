@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Shop : MonoBehaviour
 {
-    public GameObject arrowTower;
-    public GameObject sniperTower;
-    public GameObject machineTower;
+    public TowerBlueprint arrowTower;
+    public TowerBlueprint sniperTower;
+    public TowerBlueprint machineTower;
 
     BuildManager buildManager;
 

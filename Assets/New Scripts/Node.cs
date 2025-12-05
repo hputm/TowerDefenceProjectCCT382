@@ -9,6 +9,9 @@ public class Node : MonoBehaviour
 
     public GameObject tower;
 
+    public TowerBlueprint towerBlueprint;
+    public bool isUpgraded = false;
+
     private Renderer rend;
     private Color startColor;
 
@@ -71,8 +74,42 @@ public class Node : MonoBehaviour
         GameObject _tower = (GameObject)Instantiate(blueprint.prefab, transform.position + currentOffset, Quaternion.identity);
 
         tower = _tower;
+        towerBlueprint = blueprint;
 
         Debug.Log("Tower build!");
+
+    }
+
+    public void UpgradeTower ()
+    {
+        Vector3 currentOffset;
+        if (towerBlueprint.prefab == buildManager.arrowTowerPrefab)
+        {
+            currentOffset = new Vector3(0f, 5.65f, 0f);
+        }
+        else
+        {
+            currentOffset = positionOffset;
+
+        }
+
+        if (PlayerManager.Money < towerBlueprint.upgradeCost)
+        {
+            Debug.Log("Not enough money to upgrade that!");
+            return;
+        }
+
+        PlayerManager.Money -= towerBlueprint.upgradeCost;
+
+        Destroy(tower);
+
+        GameObject _tower = (GameObject)Instantiate(towerBlueprint.upgradedPrefab, transform.position + currentOffset, Quaternion.identity);
+
+        tower = _tower;
+
+        isUpgraded = true;
+
+        Debug.Log("Tower upgraded!");
 
     }
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 186308837865808433}
   - component: {fileID: -5550008795185789111}
   m_Layer: 0
-  m_Name: machine arrow
+  m_Name: arrow arrow upgraded
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,4 +104,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   speed: 70
   impactEffect: {fileID: 4344819207166696414, guid: 4e211454a56fa8c44a192e8c2134f228, type: 3}
-  damage: 100
+  damage: 75

@@ -7,8 +7,8 @@ public class TimeSurvived : MonoBehaviour
 {
 	public TextMeshProUGUI timerText;
 
-	public float startTime = 300f;
-	float timeRemaining;
+	public static float startTime = 300f;
+	public static float timeRemaining;
 
 	void Start ()
 	{

@@ -22,6 +22,7 @@ public class BuildManager : MonoBehaviour
     private TowerBlueprint towerToBuild;
 
     public bool CanBuild { get { return towerToBuild != null; } }
+    public bool HasMoney { get { return PlayerManager.Money >= towerToBuild.cost; } }
 
     public void BuildTowerOn (Node node)
     {

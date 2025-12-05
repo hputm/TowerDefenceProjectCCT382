@@ -3,6 +3,13 @@ using UnityEngine;
 public class Enemy2 : MonoBehaviour
 {
     public float speed = 10f;
+
+    public int health = 100;
+
+    public int moneyGained = 50;
+
+    public GameObject deathEffect;
+
     private Transform target;
 	private int wavepointIndex = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -10,6 +17,25 @@ public class Enemy2 : MonoBehaviour
     {
         target = Waypoints.points[0];
         
+    }
+
+
+    public void TakeDamage (int amount)
+    {
+        health -= amount;
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die ()
+    {
+        PlayerManager.Money += moneyGained;
+        GameObject effect = (GameObject)Instantiate(deathEffect, transform.position, Quaternion.identity);
+        Destroy(effect, 5f);
+        Destroy(gameObject);
     }
 
     // Update is called once per frame
@@ -32,12 +58,18 @@ public class Enemy2 : MonoBehaviour
 	{
 		if (wavepointIndex >= Waypoints.points.Length - 1)
 		{
-			Destroy(gameObject);
+			EndPath();
             return;
 
 		}
 
 		wavepointIndex++;
 		target = Waypoints.points[wavepointIndex];
+    }
+
+    void EndPath ()
+    {
+        PlayerManager.Lives--;
+        Destroy(gameObject);
     }
 }

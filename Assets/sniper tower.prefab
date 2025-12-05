@@ -127,7 +127,7 @@ MonoBehaviour:
   range: 30
   fireRate: 0.5
   enemyTag: Enemy
-  arrowPrefab: {fileID: 6709902208904407956, guid: 62c04f6f098d2e74e9f6cb0b848d29eb, type: 3}
+  arrowPrefab: {fileID: 6709902208904407956, guid: 6b7a65045ca520c47a27440f864dbd76, type: 3}
   firePoint: {fileID: 954314803307965733}
 --- !u!4 &3438506936278428406 stripped
 Transform:

@@ -5,6 +5,7 @@ public class Arrow : MonoBehaviour
     private Transform target;
     public float speed = 70f;
     public GameObject impactEffect;
+    public int damage = 50;
 
     public void Seek (Transform _target)
     {
@@ -43,7 +44,18 @@ public class Arrow : MonoBehaviour
         GameObject effectIns = (GameObject)Instantiate(impactEffect, transform.position, transform.rotation);
         Destroy(effectIns, 2f);
 
-        Destroy(target.gameObject);
+        Damage(target);
         Destroy(gameObject);
+    }
+
+    void Damage (Transform enemy)
+    {
+        Enemy2 e = enemy.GetComponent<Enemy2>();
+
+        if (e != null)
+        {
+            e.TakeDamage(damage);
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Node : MonoBehaviour
 {
@@ -21,23 +22,66 @@ public class Node : MonoBehaviour
         buildManager = BuildManager.instance;
     }
 
+    public Vector3 GetBuildPosition ()
+	{
+		return transform.position + positionOffset;
+	}
+
 
     void OnMouseDown ()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
+        if (tower != null)
+        {
+            buildManager.SelectNode(this);
+            return;
+        }
         if (!buildManager.CanBuild)
         {
             return;
         }
-        if (tower != null)
+        BuildTower(buildManager.GetTowerToBuild());
+    }
+
+    void BuildTower(TowerBlueprint blueprint)
+    {
+        Vector3 currentOffset;
+        if (blueprint.prefab == buildManager.arrowTowerPrefab)
         {
-            Debug.Log("Can't build there! - display on screen.");
+            currentOffset = new Vector3(0f, 5.65f, 0f);
+        }
+        else
+        {
+            currentOffset = positionOffset;
+
+        }
+
+        if (PlayerManager.Money < blueprint.cost)
+        {
+            Debug.Log("Not enough money to build that!");
             return;
         }
-        buildManager.BuildTowerOn(this);
+
+        PlayerManager.Money -= blueprint.cost;
+
+        GameObject _tower = (GameObject)Instantiate(blueprint.prefab, transform.position + currentOffset, Quaternion.identity);
+
+        tower = _tower;
+
+        Debug.Log("Tower build!");
+
     }
 
     void OnMouseEnter ()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
         if (!buildManager.CanBuild)
         {
             return;

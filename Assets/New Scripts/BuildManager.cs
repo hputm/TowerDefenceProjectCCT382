@@ -20,40 +20,40 @@ public class BuildManager : MonoBehaviour
     public GameObject machineTowerPrefab;
 
     private TowerBlueprint towerToBuild;
+    private Node selectedNode;
+
+    public NodeUI nodeUI;
 
     public bool CanBuild { get { return towerToBuild != null; } }
     public bool HasMoney { get { return PlayerManager.Money >= towerToBuild.cost; } }
-
-    public void BuildTowerOn (Node node)
+    
+    public void SelectNode(Node node)
     {
-        Vector3 currentOffset;
-        if (towerToBuild.prefab == arrowTowerPrefab)
+        if (selectedNode == node)
         {
-            currentOffset = new Vector3(0f, 5.65f, 0f);
-        }
-        else
-        {
-            currentOffset = node.positionOffset;
-
-        }
-
-        if (PlayerManager.Money < towerToBuild.cost)
-        {
-            Debug.Log("Not enough money to build that!");
+            DeselectNode();
             return;
         }
+        selectedNode = node;
+        towerToBuild = null;
 
-        PlayerManager.Money -= towerToBuild.cost;
-
-        GameObject tower = (GameObject)Instantiate(towerToBuild.prefab, node.transform.position + currentOffset, Quaternion.identity);
-
-        node.tower = tower;
-
-        Debug.Log("Tower build! Money left: " + PlayerManager.Money);
+        nodeUI.SetTarget(node);
     }
-    
+    public void DeselectNode()
+    {
+        selectedNode = null;
+        nodeUI.Hide();
+    }
+
     public void SelectTowerToBuild (TowerBlueprint tower)
     {
         towerToBuild = tower;
+        DeselectNode();
+    }
+
+    public TowerBlueprint GetTowerToBuild()
+    {
+        return towerToBuild;
+
     }
 }

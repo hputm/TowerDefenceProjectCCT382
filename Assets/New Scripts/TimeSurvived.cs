@@ -12,7 +12,9 @@ public class TimeSurvived : MonoBehaviour
 
 	void Start ()
 	{
+		GameManage.gameEnded = false;
 		timeRemaining = startTime;
+		UpdateDisplay();
 	}
 
 

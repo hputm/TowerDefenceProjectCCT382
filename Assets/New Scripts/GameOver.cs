@@ -6,7 +6,9 @@ public class GameOver : MonoBehaviour
 {
     public void Retry ()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        TimeSurvived.startTime = 300f;
+        GameManage.gameEnded = false;
+        SceneManager.LoadScene(1);
 
     }
 
